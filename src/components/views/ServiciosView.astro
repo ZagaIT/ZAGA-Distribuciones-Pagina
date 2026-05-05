@@ -1,0 +1,16 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<Layout lang={lang} title={`ZAGA - ${t('nav.services')}`}>
+  <section class="container mx-auto px-6 py-20 flex-grow">
+    <h1 class="text-4xl md:text-5xl font-bold text-zaga-navy mb-8">{t('nav.services')}</h1>
+    <p class="text-lg text-gray-700 max-w-2xl">
+      Catálogo interactivo de todos los servicios ofrecidos por ZAGA Distribuciones.
+    </p>
+  </section>
+</Layout>

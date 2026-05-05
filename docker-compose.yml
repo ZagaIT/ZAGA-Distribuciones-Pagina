@@ -1,0 +1,17 @@
+services:
+  web:
+    build: .
+    restart: always
+    networks:
+      - tunnel_network
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TOKEN}
+    restart: always
+    networks:
+      - tunnel_network
+
+networks:
+  tunnel_network:
+    driver: bridge

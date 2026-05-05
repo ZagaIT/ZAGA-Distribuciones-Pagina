@@ -1,0 +1,56 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<Layout lang={lang} title={`ZAGA - ${t('nav.contact')}`}>
+  <section class="container mx-auto px-6 py-20 lg:py-32 flex-grow overflow-hidden">
+    
+    <!-- Encabezado Contacto -->
+    <div class="text-center max-w-3xl mx-auto mb-16 animate-on-scroll">
+      <h1 class="text-5xl font-extrabold text-zaga-navy mb-6 tracking-tight relative inline-block">
+        {t('contact.title')}
+        <span class="absolute -bottom-2 left-1/4 right-1/4 h-1 bg-zaga-cyan rounded-full"></span>
+      </h1>
+      <p class="text-xl text-gray-600 mt-6 max-w-2xl mx-auto">
+        {t('contact.subtitle')}
+      </p>
+    </div>
+
+    <!-- Grid de Tarjetas de Contacto -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mt-12">
+      
+      <!-- Tarjeta 1: Teléfonos -->
+      <div class="bg-white p-10 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center animate-on-scroll transform hover:-translate-y-2">
+        <div class="w-16 h-16 bg-blue-50 text-zaga-blue rounded-full flex items-center justify-center mb-6">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-zaga-navy mb-4">{t('contact.call_us')}</h3>
+        <div class="flex flex-col space-y-3">
+          <a href="tel:+528331073275" class="text-lg text-gray-600 hover:text-zaga-blue font-medium transition-colors">(833) 107-32-75</a>
+          <a href="tel:+528333629238" class="text-lg text-gray-600 hover:text-zaga-blue font-medium transition-colors">(833) 362-92-38</a>
+        </div>
+      </div>
+
+      <!-- Tarjeta 2: Correos -->
+      <div class="bg-white p-10 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center animate-on-scroll transform hover:-translate-y-2" style="transition-delay: 150ms;">
+        <div class="w-16 h-16 bg-blue-50 text-zaga-blue rounded-full flex items-center justify-center mb-6">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-zaga-navy mb-4">{t('contact.email_us')}</h3>
+        <div class="flex flex-col space-y-3">
+          <a href="mailto:distribuciones.zaga25@gmail.com" class="text-lg text-gray-600 hover:text-zaga-blue font-medium transition-colors break-all">distribuciones.zaga25@gmail.com</a>
+          <a href="mailto:asistente.zaga25@gmail.com" class="text-lg text-gray-600 hover:text-zaga-blue font-medium transition-colors break-all">asistente.zaga25@gmail.com</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</Layout>

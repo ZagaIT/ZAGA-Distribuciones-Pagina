@@ -1,0 +1,18 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+// Utilizando i18n para los enlaces del footer
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const basePath = lang === 'en' ? '/en' : '';
+---
+
+<footer class="bg-zaga-navy text-white py-8 mt-auto">
+  <div class="container mx-auto px-4 text-center justify-center flex flex-col md:flex-row items-center md:justify-between">
+    <p class="text-sm text-gray-300">&copy; {new Date().getFullYear()} ZAGA Distribuciones. Todos los derechos reservados.</p>
+    <div class="flex space-x-6 mt-4 md:mt-0 text-sm">
+      <a href={`${basePath}/`} class="hover:text-zaga-cyan transition-colors">{t('nav.home')}</a>
+      <a href={`${basePath}/contacto`} class="hover:text-zaga-cyan transition-colors">{t('nav.contact')}</a>
+    </div>
+  </div>
+</footer>

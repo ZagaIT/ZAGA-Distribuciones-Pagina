@@ -1,0 +1,91 @@
+export const languages = {
+  es: 'Español',
+  en: 'English',
+};
+
+export const defaultLang = 'es';
+
+export const ui = {
+  es: {
+    'nav.home': 'Inicio',
+    'nav.about': 'Nosotros',
+    'nav.services': 'Servicios',
+    'nav.brands': 'Marcas',
+    'nav.contact': 'Contacto',
+    'hero.title': 'Bienvenidos a',
+    'hero.subtitle': 'Soluciones integrales.',
+    'company.name': 'ZAGA Distribuciones',
+    'company.description': 'Somos una empresa dedicada al Suministro e Instalación de equipo y Material eléctrico, enfocada a cumplir con los requerimientos especiales del cliente basándonos en el servicio de cotización rápida y entrega en el menor tiempo posible.',
+    'company.cta.quote': 'Cotiza con nosotros',
+    'company.cta.products': 'Ver Productos',
+    'feature.quote.title': 'Cotización Rápida',
+    'feature.quote.desc': 'Presupuestos ágiles y competitivos ajustados a las necesidades específicas de tu proyecto.',
+    'feature.delivery.title': 'Entregas a Tiempo',
+    'feature.delivery.desc': 'Compromiso total con los plazos de entrega para mantener el ritmo de tu obra o negocio.',
+    'feature.brands.title': 'Variedad de Marcas',
+    'feature.brands.desc': 'Distribuimos las mejores marcas de equipo y material eléctrico garantizando calidad óptima.',
+    
+    'home.about.title': 'Conoce ZAGA',
+    'home.about.desc': 'Somos tu aliado estratégico en distribución. Nuestro compromiso es garantizar que tus proyectos se materialicen sin contratiempos, con la mejor atención y calidad.',
+    'home.about.btn': 'Saber más sobre nosotros',
+    
+    'about.experience.title': 'Nuestra Experiencia',
+    'about.experience.desc': 'Contamos con personal de experiencia en el Ramo para cubrir sus requerimientos buscando siempre soluciones alternas a Marcas, Modelos, Catálogos y tipos de equipos y materiales que nuestros clientes necesitan.',
+    'about.list.one': 'Soluciones alternas y factibles a su presupuesto',
+    'about.list.two': 'Atención rápida y asesoría personalizada',
+    'about.list.three': 'Cobertura técnica y refacciones aseguradas',
+    
+    'about.mission.title': 'Misión',
+    'about.mission.text': 'Brindar un suministro eficiente y confiable de equipo y material eléctrico, ofreciendo cotizaciones rápidas y alternativas adaptables que superen las expectativas de nuestros clientes y apoyen el éxito integral de sus proyectos.',
+    'about.vision.title': 'Visión',
+    'about.vision.text': 'Ser la empresa líder en distribución eléctrica, reconocida por la excelencia en tiempos de respuesta, nuestra vasta red de marcas de prestigio y nuestra atención personalizada centrada en el valor humano.',
+    'about.values.title': 'Valores',
+    'about.values.text': 'Nos rigen el Compromiso Inquebrantable, la Agilidad de Respuesta, la Integridad Profesional y la Innovación Constante en beneficio de nuestros socios de negocio.',
+    
+    'contact.title': 'Contacto',
+    'contact.subtitle': 'Estamos listos para atender tus requerimientos especiales con cotizaciones rápidas.',
+    'contact.call_us': 'Llámanos',
+    'contact.email_us': 'Envíanos un correo'
+  },
+  en: {
+    'nav.home': 'Home',
+    'nav.about': 'About Us',
+    'nav.services': 'Services',
+    'nav.brands': 'Brands',
+    'nav.contact': 'Contact',
+    'hero.title': 'Welcome to',
+    'hero.subtitle': 'Comprehensive solutions.',
+    'company.name': 'ZAGA Distribuciones',
+    'company.description': 'We are a company dedicated to the Supply and Installation of electrical equipment and materials, focused on meeting our customers\' special requirements based on fast quoting and delivery in the shortest possible time.',
+    'company.cta.quote': 'Get a Quote',
+    'company.cta.products': 'View Products',
+    'feature.quote.title': 'Fast Quoting',
+    'feature.quote.desc': 'Agile and competitive budgets tailored to your specific project needs.',
+    'feature.delivery.title': 'On-Time Deliveries',
+    'feature.delivery.desc': 'Total commitment to delivery deadlines to keep your project or business on track.',
+    'feature.brands.title': 'Variety of Brands',
+    'feature.brands.desc': 'We distribute the best brands of electrical equipment and materials, ensuring optimal quality.',
+    
+    'home.about.title': 'Get to Know ZAGA',
+    'home.about.desc': 'We are your strategic ally in the distribution of electrical equipment and materials. Our commitment is to ensure your projects materialize smoothly, with the best attention and quality.',
+    'home.about.btn': 'Learn more about us',
+    
+    'about.experience.title': 'Our Experience',
+    'about.experience.desc': 'We have experienced personnel in the field to cover your requirements, always looking for alternative solutions to Brands, Models, Catalogs, and types of equipment and materials that our clients need.',
+    'about.list.one': 'Alternative and feasible solutions for your budget',
+    'about.list.two': 'Fast attention and personalized advice',
+    'about.list.three': 'Technical coverage and guaranteed spare parts',
+    
+    'about.mission.title': 'Mission',
+    'about.mission.text': 'Provide an efficient and reliable supply of electrical equipment and materials, offering fast quotes and adaptable alternatives that exceed our customers\' expectations and support the overall success of their projects.',
+    'about.vision.title': 'Vision',
+    'about.vision.text': 'To be the leading electrical distribution company, recognized for excellence in response times, our vast network of prestigious brands, and our personalized attention focused on human value.',
+    'about.values.title': 'Values',
+    'about.values.text': 'We are governed by Unwavering Commitment, Agility of Response, Professional Integrity, and Constant Innovation for the benefit of our business partners.',
+    
+    'contact.title': 'Contact',
+    'contact.subtitle': 'We are ready to meet your special requirements with fast quotes.',
+    'contact.call_us': 'Call Us',
+    'contact.email_us': 'Email Us'
+  },
+} as const;
