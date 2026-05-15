@@ -4,13 +4,65 @@ import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+
+// Array estático de las claves de categorías para iterar
+const serviceCategories = ['cat1', 'cat2', 'cat3', 'cat4', 'cat5', 'cat6', 'cat7'];
 ---
 
-<Layout lang={lang} title={`ZAGA - ${t('nav.services')}`}>
-  <section class="container mx-auto px-6 py-20 flex-grow">
-    <h1 class="text-4xl md:text-5xl font-bold text-zaga-navy mb-8">{t('nav.services')}</h1>
-    <p class="text-lg text-gray-700 max-w-2xl">
-      Catálogo interactivo de todos los servicios ofrecidos por ZAGA Distribuciones.
-    </p>
-  </section>
+<Layout lang={lang} title={`ZAGA - ${t('services.title')}`} description={t('services.subtitle')}>
+  <div class="flex-grow flex flex-col">
+    
+    <!-- Hero Header de Servicios -->
+    <section class="bg-zaga-navy pt-32 pb-24 px-6 relative overflow-hidden flex flex-col items-center justify-center">
+      <!-- Malla Decorativa Glassmorphism -->
+      <div class="absolute inset-0 z-0 opacity-[0.05]" style="background-image: radial-gradient(var(--color-zaga-cyan) 2px, transparent 2px); background-size: 30px 30px;"></div>
+      <div class="absolute top-0 right-0 w-96 h-96 bg-zaga-blue rounded-full filter blur-[150px] opacity-20 pointer-events-none"></div>
+
+      <div class="relative z-10 text-center max-w-4xl animate-on-scroll">
+        <h1 class="text-5xl lg:text-7xl font-extrabold text-white mb-8 tracking-tight relative inline-block drop-shadow-md">
+          {t('services.title')}
+          <span class="absolute -bottom-3 left-1/4 right-1/4 h-1.5 bg-zaga-cyan rounded-full"></span>
+        </h1>
+        <p class="text-xl md:text-2xl text-blue-50 mt-10 font-light max-w-3xl mx-auto leading-relaxed text-balance">
+          {t('services.subtitle')}
+        </p>
+      </div>
+    </section>
+
+    <!-- Catálogo en Responsive Grid -->
+    <section class="py-24 px-6 bg-gray-50 flex-grow relative">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+          
+          {serviceCategories.map((cat, index) => (
+            <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02] hover:bg-gradient-to-br hover:from-white hover:to-zaga-blue/5 animate-on-scroll border-b-4 border-zaga-cyan p-8 md:p-10 flex flex-col group relative overflow-hidden cursor-pointer" style={`transition-delay: ${index * 100}ms`}>
+              
+              <!-- Icono de Categoría (Acento Azul) -->
+              <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-zaga-blue/10 text-zaga-blue flex items-center justify-center mb-8 group-hover:scale-110 group-hover:bg-zaga-cyan/20 transition-all duration-500">
+                <svg class="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Icono Rayo Simbólico -->
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+              </div>
+
+              <!-- Título y Descripción -->
+              <h3 class="text-2xl md:text-3xl font-bold text-zaga-navy mb-4 leading-tight group-hover:text-zaga-blue transition-colors duration-300">
+                {t(`services.${cat}.title` as any)}
+              </h3>
+              <p class="text-gray-600 text-lg leading-relaxed font-medium mb-6 flex-grow">
+                {t(`services.${cat}.desc` as any)}
+              </p>
+              
+              <!-- Flecha interactiva -->
+              <div class="flex justify-end mt-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <svg class="w-6 h-6 text-zaga-blue transform group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+              </div>
+            </div>
+          ))}
+
+        </div>
+      </div>
+    </section>
+
+  </div>
 </Layout>

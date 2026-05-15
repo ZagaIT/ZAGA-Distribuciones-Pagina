@@ -1,16 +1,165 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+
+// 1. Array de Categorías Masivas
+const catalogCategories = [
+  {
+    name: "Conductores Eléctricos",
+    brands: ['CONDUMEX', 'ARGOS', 'VIAKON', 'Indiana Wire & Cable', 'General Cable', 'ondulac', 'KOBREX']
+  },
+  {
+    name: "Tubería Conduit y Fittings",
+    brands: ['Crouse-Hinds by EATON', 'KILLARK', 'RAWELT', 'Appleton', 'CONDUCCASA', 'Ternium', 'Hylsa', 'INDALUM', 'Thomas & Betts']
+  },
+  {
+    name: "Equipo de Control y Distribución",
+    brands: ['SQUARE D', 'SIEMENS', 'ABB', 'OMRON', 'Allen-Bradley', 'MOELLER', 'BALLUFF', 'ARROW HART', 'LEVITON', 'bticino']
+  },
+  {
+    name: "Iluminación",
+    brands: ['PHILCO-SLP-BRILLA-MAX', 'tecnolite', 'PHILIPS Lighting', 'Dimas Lighting', 'MAGG', 'LAITING']
+  },
+  {
+    name: "Sistemas de Protección",
+    brands: ['TOTAL GROUND', 'AMESA', 'ENERGAIN', 'TECNOLED PLUS']
+  },
+  {
+    name: "Ferretería y Tornillería",
+    brands: ['TRUPER', 'VOLTECK', 'PRETUL', 'FOSET', 'FIERO', 'Klintek', 'HERMEX']
+  },
+  {
+    name: "Construcción y Acabados",
+    brands: ['Holcim', 'HELVEX', 'RUGO', 'APASCO', 'LAMOSA', 'CATO', 'Fester', 'CREST', 'cemix', 'Berel', 'Sayer', 'Comex', 'BEHR']
+  },
+  {
+    name: "Varios",
+    brands: ['3M']
+  }
+];
+
+// 2. Importación Dinámica Defensiva
+const logos = import.meta.glob<{ default: ImageMetadata }>('/src/assets/marcas/*.{png,jpg,jpeg,svg,webp}', { eager: true });
+
+// Función de Normalización para Match
+const normalizeBrandName = (name: string) => name.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+const getBrandLogo = (brandName: string): ImageMetadata | null => {
+  const normalizedMatch = normalizeBrandName(brandName);
+  for (const path in logos) {
+    const filename = path.split('/').pop()?.split('.')[0] || '';
+    if (normalizeBrandName(filename) === normalizedMatch) {
+      return logos[path].default;
+    }
+  }
+  return null;
+};
 ---
 
-<Layout lang={lang} title={`ZAGA - ${t('nav.brands')}`}>
-  <section class="container mx-auto px-6 py-20 flex-grow">
-    <h1 class="text-4xl md:text-5xl font-bold text-zaga-navy mb-8">{t('nav.brands')}</h1>
-    <p class="text-lg text-gray-700 max-w-2xl">
-      Información sobre las marcas que importamos y distribuimos en ZAGA.
-    </p>
-  </section>
+<Layout lang={lang} title={`ZAGA - ${t('brands.title')}`} description={t('brands.subtitle')}>
+  <div class="flex-grow flex flex-col">
+    <!-- Hero Header -->
+    <section class="bg-zaga-navy py-20 lg:py-32 px-6 flex flex-col items-center justify-center relative overflow-hidden">
+      <div class="absolute inset-0 z-0 opacity-[0.03]" style="background-image: radial-gradient(#ffffff 2px, transparent 2px); background-size: 30px 30px;"></div>
+      
+      <div class="relative z-10 text-center max-w-4xl animate-on-scroll">
+        <h1 class="text-4xl md:text-5xl lg:text-7xl font-extrabold text-white mb-6 tracking-tight relative inline-block drop-shadow-md">
+          {t('brands.title')}
+          <span class="absolute -bottom-4 left-1/3 right-1/3 h-1.5 bg-zaga-blue rounded-full"></span>
+        </h1>
+        <p class="text-xl md:text-2xl text-blue-50 mt-10 font-light max-w-3xl mx-auto text-balance">
+          {t('brands.subtitle')}
+        </p>
+      </div>
+    </section>
+
+    <!-- Distribuidores Oficiales (VIP) -->
+    <section class="py-24 px-6 bg-white relative">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16 animate-on-scroll">
+          <h2 class="text-3xl lg:text-5xl font-bold text-zaga-navy">{t('brands.featured')}</h2>
+          <div class="h-1 w-20 bg-zaga-cyan mx-auto mt-6 rounded-full"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <!-- TRUPER VIP -->
+          <div class="bg-white rounded-3xl p-8 lg:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-shadow duration-300 border border-gray-100 animate-on-scroll group border-t-4 border-t-orange-500">
+            <div class="aspect-video bg-gray-50 rounded-2xl flex items-center justify-center text-3xl font-extrabold text-gray-300 shadow-inner mb-8 group-hover:bg-gray-100 transition-colors p-4">
+              {getBrandLogo('TRUPER') ? (
+                <Image src={getBrandLogo('TRUPER')!} alt="TRUPER Logo" class="w-full h-full object-contain grayscale hover:grayscale-0 transition-all duration-300" />
+              ) : (
+                <span>[Logo TRUPER]</span>
+              )}
+            </div>
+            <h3 class="text-2xl font-bold text-zaga-navy mb-3">TRUPER</h3>
+            <p class="text-gray-600 text-lg">Distribuidor principal de la amplia gama de herramientas y equipos ferreteros de calidad superior garantizada.</p>
+          </div>
+
+          <!-- SQUARE D VIP -->
+          <div class="bg-white rounded-3xl p-8 lg:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-shadow duration-300 border border-gray-100 animate-on-scroll group border-t-4 border-t-green-600" style="transition-delay: 150ms;">
+            <div class="aspect-video bg-gray-50 rounded-2xl flex items-center justify-center text-3xl font-extrabold text-gray-300 shadow-inner mb-8 group-hover:bg-gray-100 transition-colors p-4">
+              {getBrandLogo('SQUARE D') ? (
+                <Image src={getBrandLogo('SQUARE D')!} alt="SQUARE D Logo" class="w-full h-full object-contain grayscale hover:grayscale-0 transition-all duration-300" />
+              ) : (
+                <span>[Logo SQUARE D]</span>
+              )}
+            </div>
+            <h3 class="text-2xl font-bold text-zaga-navy mb-3">SQUARE D by Schneider</h3>
+            <p class="text-gray-600 text-lg">Especialistas en control y distribución eléctrica con la confianza del líder mundial en gestión de energía.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Catálogo Completo Agrupado -->
+    <section class="pb-32 px-6 bg-white relative">
+      <div class="max-w-7xl mx-auto">
+        
+        <div class="mb-12 animate-on-scroll text-center">
+          <h2 class="text-3xl lg:text-4xl font-bold text-zaga-navy flex items-center justify-center gap-4">
+            <svg class="w-8 h-8 text-zaga-cyan" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2.5 4A1.5 1.5 0 001 5.5V14a2 2 0 002 2h14a2 2 0 002-2V5.5A1.5 1.5 0 0017.5 4h-15zM9 8a1 1 0 011-1h6a1 1 0 110 2h-6a1 1 0 01-1-1zm-4.707 3.707a1 1 0 00-1.414-1.414l-1.5 1.5a1 1 0 000 1.414l1.5 1.5a1 1 0 001.414-1.414L3.414 12l.879-.879zM9 12a1 1 0 011-1h6a1 1 0 110 2h-6a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
+            {t('brands.catalog')}
+          </h2>
+        </div>
+
+        <!-- Iteración de Categorías Industriales -->
+        <div class="space-y-16">
+          {catalogCategories.map((category) => (
+            <div class="animate-on-scroll">
+              
+              <h3 class="text-2xl font-bold text-zaga-navy mb-6 border-b-2 border-zaga-cyan/30 pb-3 flex items-center gap-3">
+                <span class="w-2 h-6 bg-zaga-cyan rounded-full"></span>
+                {category.name}
+              </h3>
+              
+              <!-- Grid Masivo de Sub-Tarjetas -->
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {category.brands.map((brand) => {
+                  const logo = getBrandLogo(brand);
+                  
+                  return (
+                    <div class="aspect-square bg-gray-50 border border-gray-200/60 rounded-xl shadow-sm hover:shadow-lg flex items-center justify-center p-4 transition-all duration-300 hover:-translate-y-1 hover:border-zaga-blue group">
+                      {logo ? (
+                        <Image src={logo} alt={`${brand} Logo`} class="w-full h-full object-contain grayscale hover:grayscale-0 transition-all duration-300 opacity-80 group-hover:opacity-100" />
+                      ) : (
+                        <span class="font-bold text-gray-400 text-center tracking-wider text-sm sm:text-base group-hover:text-zaga-navy transition-colors">{brand}</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+
+  </div>
 </Layout>

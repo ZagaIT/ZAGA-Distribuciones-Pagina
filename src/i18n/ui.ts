@@ -45,7 +45,29 @@ export const ui = {
     'contact.title': 'Contacto',
     'contact.subtitle': 'Estamos listos para atender tus requerimientos especiales con cotizaciones rápidas.',
     'contact.call_us': 'Llámanos',
-    'contact.email_us': 'Envíanos un correo'
+    'contact.email_us': 'Envíanos un correo',
+
+    'services.title': 'Nuestros Servicios',
+    'services.subtitle': 'Catálogo integral de suministro, instalaciones y distribución.',
+    'services.cat1.title': 'Suministro e Instalación',
+    'services.cat1.desc': 'Suministro e instalación de equipo y material eléctrico enfocado a cumplir los requerimientos especiales del cliente con cotización rápida.',
+    'services.cat2.title': 'Conductores Eléctricos',
+    'services.cat2.desc': 'Cables para baja y media tensión, sistemas de energía, control, minas y aplicaciones industriales.',
+    'services.cat3.title': 'Tubería Conduit y Accesorios',
+    'services.cat3.desc': 'Tubería galvanizada y de aluminio (pared delgada/gruesa), fittings, condulets y recubrimientos especializados en PVC.',
+    'services.cat4.title': 'Control y Distribución',
+    'services.cat4.desc': 'Equipo de control, interruptores, monitoreo, gabinetes, ductos y transformadores.',
+    'services.cat5.title': 'Iluminación Profesional',
+    'services.cat5.desc': 'Iluminación para hogar, oficinas y naves industriales, incluyendo estudios de iluminación especializados.',
+    'services.cat6.title': 'Sistemas de Protección',
+    'services.cat6.desc': 'Instalación de pararrayos, sistemas de puesta a tierra y herrajes de seguridad.',
+    'services.cat7.title': 'Ferretería y Acabados',
+    'services.cat7.desc': 'Amplia gama de ferretería, tornillería, impermeabilizantes, pinturas, selladores y accesorios cerámicos.',
+
+    'brands.title': 'Nuestras Marcas',
+    'brands.subtitle': 'Trabajamos con los fabricantes líderes de la industria',
+    'brands.featured': 'Distribuidores Oficiales',
+    'brands.catalog': 'Catálogo Completo'
   },
   en: {
     'nav.home': 'Home',
@@ -86,6 +108,28 @@ export const ui = {
     'contact.title': 'Contact',
     'contact.subtitle': 'We are ready to meet your special requirements with fast quotes.',
     'contact.call_us': 'Call Us',
-    'contact.email_us': 'Email Us'
+    'contact.email_us': 'Email Us',
+
+    'services.title': 'Our Services',
+    'services.subtitle': 'Comprehensive catalog of supply, installation, and distribution.',
+    'services.cat1.title': 'Supply and Installation',
+    'services.cat1.desc': 'Supply and installation of electrical equipment and materials focused on meeting special client requirements with fast quoting.',
+    'services.cat2.title': 'Electrical Conductors',
+    'services.cat2.desc': 'Low and medium voltage cables, power systems, control, mining, and industrial applications.',
+    'services.cat3.title': 'Conduit Piping and Accessories',
+    'services.cat3.desc': 'Galvanized and aluminum piping (thin/thick wall), fittings, condulets, and specialized PVC coatings.',
+    'services.cat4.title': 'Control and Distribution',
+    'services.cat4.desc': 'Control equipment, switches, monitoring devices, cabinets, ducts, and transformers.',
+    'services.cat5.title': 'Professional Lighting',
+    'services.cat5.desc': 'Lighting for homes, offices, and industrial warehouses, including specialized lighting studies.',
+    'services.cat6.title': 'Protection Systems',
+    'services.cat6.desc': 'Installation of lightning rods, grounding systems, and safety hardware.',
+    'services.cat7.title': 'Hardware and Finishes',
+    'services.cat7.desc': 'Wide range of hardware, screws, waterproofing products, paints, sealants, and ceramic accessories.',
+
+    'brands.title': 'Our Brands',
+    'brands.subtitle': 'We work with industry-leading manufacturers',
+    'brands.featured': 'Official Distributors',
+    'brands.catalog': 'Full Catalog'
   },
 } as const;
