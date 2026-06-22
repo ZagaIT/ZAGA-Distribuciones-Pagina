@@ -10,35 +10,43 @@ const t = useTranslations(lang);
 // 1. Array de Categorías Masivas
 const catalogCategories = [
   {
-    name: "Conductores Eléctricos",
+    titleKey: "brands.cat.title.conductores",
+    descKey: "brands.cat.conductores",
     brands: ['CONDUMEX', 'ARGOS', 'VIAKON', 'Indiana Wire & Cable', 'General Cable', 'ondulac', 'KOBREX']
   },
   {
-    name: "Tubería Conduit y Fittings",
+    titleKey: "brands.cat.title.tuberia",
+    descKey: "brands.cat.tuberia",
     brands: ['Crouse-Hinds by EATON', 'KILLARK', 'RAWELT', 'Appleton', 'CONDUCCASA', 'Ternium', 'Hylsa', 'INDALUM', 'Thomas & Betts']
   },
   {
-    name: "Equipo de Control y Distribución",
+    titleKey: "brands.cat.title.control",
+    descKey: "brands.cat.control",
     brands: ['SQUARE D', 'SIEMENS', 'ABB', 'OMRON', 'Allen-Bradley', 'MOELLER', 'BALLUFF', 'ARROW HART', 'LEVITON', 'bticino']
   },
   {
-    name: "Iluminación",
+    titleKey: "brands.cat.title.iluminacion",
+    descKey: "brands.cat.iluminacion",
     brands: ['PHILCO-SLP-BRILLA-MAX', 'tecnolite', 'PHILIPS Lighting', 'Dimas Lighting', 'MAGG', 'LAITING']
   },
   {
-    name: "Sistemas de Protección",
+    titleKey: "brands.cat.title.proteccion",
+    descKey: "brands.cat.proteccion",
     brands: ['TOTAL GROUND', 'AMESA', 'ENERGAIN', 'TECNOLED PLUS']
   },
   {
-    name: "Ferretería y Tornillería",
+    titleKey: "brands.cat.title.ferreteria",
+    descKey: "brands.cat.ferreteria",
     brands: ['TRUPER', 'VOLTECK', 'PRETUL', 'FOSET', 'FIERO', 'Klintek', 'HERMEX']
   },
   {
-    name: "Construcción y Acabados",
+    titleKey: "brands.cat.title.construccion",
+    descKey: "brands.cat.construccion",
     brands: ['Holcim', 'HELVEX', 'RUGO', 'APASCO', 'LAMOSA', 'CATO', 'Fester', 'CREST', 'cemix', 'Berel', 'Sayer', 'Comex', 'BEHR']
   },
   {
-    name: "Varios",
+    titleKey: "brands.cat.title.varios",
+    descKey: "brands.cat.varios",
     brands: ['3M']
   }
 ];
@@ -78,6 +86,21 @@ const getBrandLogo = (brandName: string): ImageMetadata | null => {
       </div>
     </section>
 
+    <!-- Introducción -->
+    <section class="py-16 px-6 bg-gray-50 relative border-b border-gray-200">
+      <div class="max-w-5xl mx-auto text-center animate-on-scroll">
+        <p class="text-xl md:text-2xl text-zaga-navy leading-relaxed mb-6 font-semibold">
+          {t('brands.intro.p1')}
+        </p>
+        <p class="text-lg md:text-xl text-gray-600 leading-relaxed mb-8 max-w-4xl mx-auto">
+          {t('brands.intro.p2')}
+        </p>
+        <p class="text-lg md:text-xl font-bold text-zaga-cyan uppercase tracking-wider">
+          {t('brands.intro.p3')}
+        </p>
+      </div>
+    </section>
+
     <!-- Distribuidores Oficiales (VIP) -->
     <section class="py-24 px-6 bg-white relative">
       <div class="max-w-7xl mx-auto">
@@ -97,7 +120,7 @@ const getBrandLogo = (brandName: string): ImageMetadata | null => {
               )}
             </div>
             <h3 class="text-2xl font-bold text-zaga-navy mb-3">TRUPER</h3>
-            <p class="text-gray-600 text-lg">Distribuidor principal de la amplia gama de herramientas y equipos ferreteros de calidad superior garantizada.</p>
+            <p class="text-gray-600 text-lg">{t('brands.vip.truper.desc')}</p>
           </div>
 
           <!-- SQUARE D VIP -->
@@ -110,7 +133,7 @@ const getBrandLogo = (brandName: string): ImageMetadata | null => {
               )}
             </div>
             <h3 class="text-2xl font-bold text-zaga-navy mb-3">SQUARE D by Schneider</h3>
-            <p class="text-gray-600 text-lg">Especialistas en control y distribución eléctrica con la confianza del líder mundial en gestión de energía.</p>
+            <p class="text-gray-600 text-lg">{t('brands.vip.squared.desc')}</p>
           </div>
         </div>
       </div>
@@ -132,10 +155,14 @@ const getBrandLogo = (brandName: string): ImageMetadata | null => {
           {catalogCategories.map((category) => (
             <div class="animate-on-scroll">
               
-              <h3 class="text-2xl font-bold text-zaga-navy mb-6 border-b-2 border-zaga-cyan/30 pb-3 flex items-center gap-3">
+              <h3 class="text-2xl font-bold text-zaga-navy mb-4 border-b-2 border-zaga-cyan/30 pb-3 flex items-center gap-3">
                 <span class="w-2 h-6 bg-zaga-cyan rounded-full"></span>
-                {category.name}
+                {t(category.titleKey as any)}
               </h3>
+              
+              <p class="text-gray-600 text-lg leading-relaxed mb-8 max-w-4xl">
+                {t(category.descKey as any)}
+              </p>
               
               <!-- Grid Masivo de Sub-Tarjetas -->
               <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -158,6 +185,19 @@ const getBrandLogo = (brandName: string): ImageMetadata | null => {
           ))}
         </div>
 
+      </div>
+    </section>
+
+    <!-- Mensaje Final -->
+    <section class="py-20 px-6 bg-zaga-navy relative overflow-hidden">
+      <div class="absolute inset-0 z-0 opacity-[0.03]" style="background-image: radial-gradient(#ffffff 2px, transparent 2px); background-size: 30px 30px;"></div>
+      <div class="relative z-10 max-w-4xl mx-auto text-center animate-on-scroll">
+        <h3 class="text-2xl md:text-4xl font-bold text-white mb-6 leading-tight">
+          {t('brands.outro.p1')}
+        </h3>
+        <p class="text-xl md:text-2xl text-blue-50/80 font-light max-w-3xl mx-auto">
+          {t('brands.outro.p2')}
+        </p>
       </div>
     </section>
 
