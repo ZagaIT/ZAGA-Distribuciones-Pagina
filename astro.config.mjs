@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
+  output: 'static',
   i18n: {
     defaultLocale: 'es',
     locales: ['es', 'en'],
@@ -12,9 +13,5 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()]
   },
-  adapter: cloudflare({
-    // Esto fuerza a Astro a comprimir y generar las imágenes localmente al compilar
-    // como archivos estáticos puros, eliminando las peticiones a /_image
-    imageService: 'compileLocal'
-  })
+  adapter: cloudflare()
 });
