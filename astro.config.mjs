@@ -12,14 +12,9 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()]
   },
-  image: {
-    // Reactiva el optimizador de imágenes local de Astro (Sharp)
-    service: {
-      entrypoint: 'astro/assets/services/sharp'
-    }
-  },
   adapter: cloudflare({
-    // Apaga el intento de usar el servicio de imágenes de Cloudflare
-    imageService: 'passthrough'
+    // Esto fuerza a Astro a comprimir y generar las imágenes localmente al compilar
+    // como archivos estáticos puros, eliminando las peticiones a /_image
+    imageService: 'compileLocal'
   })
 });
