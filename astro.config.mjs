@@ -13,14 +13,8 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()]
   },
-  // 1. Forzamos el uso del optimizador local de Astro
-  image: {
-    service: {
-      entrypoint: 'astro/assets/services/sharp'
-    }
-  },
-  // 2. Le decimos al adaptador de Cloudflare que no toque las imágenes
   adapter: cloudflare({
-    imageService: 'passthrough'
+    // ESTA ES LA CLAVE: Obliga a Astro a usar Sharp (local) y apaga el servicio de pago de Cloudflare
+    imageService: 'compile'
   })
 });
