@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
 
 interface Props {
   lang: string;
@@ -51,6 +52,7 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
       <slot />
     </main>
     <Footer />
+    <WhatsAppButton />
 
     <script is:inline>
       document.addEventListener("DOMContentLoaded", () => {
