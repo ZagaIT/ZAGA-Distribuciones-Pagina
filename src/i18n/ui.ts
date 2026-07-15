@@ -7,6 +7,21 @@ export const defaultLang = 'es';
 
 export const ui = {
   es: {
+    'seo.home.title': 'ZAGA Distribuciones | Material Eléctrico en Tampico, Tamaulipas',
+    'seo.home.desc': 'Suministro e instalación de equipo y material eléctrico en Tampico, Tamaulipas. Cotización rápida, entrega a tiempo y marcas líderes. Servicio en todo México.',
+    'seo.about.title': 'Nosotros | ZAGA Distribuciones — Distribuidora de Material Eléctrico',
+    'seo.about.desc': 'Conoce ZAGA Distribuciones: experiencia en el ramo eléctrico, misión, visión y valores. Soluciones alternas en marcas, modelos y materiales para tu proyecto.',
+    'seo.services.title': 'Servicios de Suministro e Instalación Eléctrica | ZAGA Distribuciones',
+    'seo.services.desc': 'Conductores eléctricos, tubería conduit, control y distribución, iluminación profesional, pararrayos, puesta a tierra y ferretería. Cotización rápida garantizada.',
+    'seo.brands.title': 'Marcas: Siemens, Square D, Truper y más | ZAGA Distribuciones',
+    'seo.brands.desc': 'Distribuidores de Soldexel, Condumex, Siemens, Square D, ABB, Philips, Truper y más. Cable antirrobo CCS, Copperclad, Alumoclad y Spartan Smart Box.',
+    'seo.contact.title': 'Contacto y Cotizaciones | ZAGA Distribuciones',
+    'seo.contact.desc': 'Contáctanos para cotizaciones rápidas de material eléctrico: Tel. (833) 107-3278, WhatsApp disponible. Atención personalizada en Tampico y todo México.',
+    'seo.404.title': 'Página no encontrada | ZAGA Distribuciones',
+    'notfound.title': 'Página no encontrada',
+    'notfound.desc': 'La página que buscas no existe o fue movida.',
+    'notfound.btn': 'Volver al inicio',
+
     'nav.home': 'Inicio',
     'nav.about': 'Nosotros',
     'nav.services': 'Servicios',
@@ -137,6 +152,21 @@ export const ui = {
     'brands.outro.p2': 'Sin más por el momento agradecemos su atención y esperamos nos permita ser su proveedor confiable para sus proyectos.'
   },
   en: {
+    'seo.home.title': 'ZAGA Distribuciones | Electrical Supplies in Tampico, Mexico',
+    'seo.home.desc': 'Supply and installation of electrical equipment and materials in Tampico, Tamaulipas. Fast quotes, on-time delivery, and leading brands. Serving all of Mexico.',
+    'seo.about.title': 'About Us | ZAGA Distribuciones — Electrical Supply Distributor',
+    'seo.about.desc': 'Get to know ZAGA Distribuciones: experience in the electrical industry, mission, vision, and values. Alternative solutions in brands, models, and materials.',
+    'seo.services.title': 'Electrical Supply & Installation Services | ZAGA Distribuciones',
+    'seo.services.desc': 'Electrical conductors, conduit piping, control and distribution, professional lighting, lightning rods, grounding systems, and hardware. Fast quotes guaranteed.',
+    'seo.brands.title': 'Brands: Siemens, Square D, Truper & More | ZAGA Distribuciones',
+    'seo.brands.desc': 'Distributors of Soldexel, Condumex, Siemens, Square D, ABB, Philips, Truper, and more. CCS anti-theft cable, Copperclad, Alumoclad, and Spartan Smart Box.',
+    'seo.contact.title': 'Contact & Quotes | ZAGA Distribuciones',
+    'seo.contact.desc': 'Contact us for fast electrical supply quotes: Tel. +52 (833) 107-3278, WhatsApp available. Personalized service in Tampico and throughout Mexico.',
+    'seo.404.title': 'Page Not Found | ZAGA Distribuciones',
+    'notfound.title': 'Page not found',
+    'notfound.desc': 'The page you are looking for does not exist or has been moved.',
+    'notfound.btn': 'Back to home',
+
     'nav.home': 'Home',
     'nav.about': 'About Us',
     'nav.services': 'Services',

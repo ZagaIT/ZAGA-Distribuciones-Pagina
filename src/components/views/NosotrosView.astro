@@ -8,7 +8,7 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
-<Layout lang={lang} title={`ZAGA - ${t('nav.about')}`}>
+<Layout lang={lang} title={t('seo.about.title')} description={t('seo.about.desc')}>
   <section class="container mx-auto px-6 py-20 lg:py-32 flex-grow overflow-hidden">
     
     <!-- Encabezado Nosotros -->

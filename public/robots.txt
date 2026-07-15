@@ -1,0 +1,44 @@
+# robots.txt — ZAGA Distribuciones
+# Permitimos a todos los buscadores indexar el sitio completo.
+
+User-agent: *
+Allow: /
+
+# Crawlers de motores de IA (GEO — Generative Engine Optimization):
+# permitidos explícitamente para aparecer en respuestas de ChatGPT,
+# Claude, Perplexity, Gemini y similares.
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+Sitemap: https://www.zagadistribuciones.com/sitemap-index.xml

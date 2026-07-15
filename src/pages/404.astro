@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<Layout lang={lang} title={t('seo.404.title')} noindex={true}>
+  <section class="flex-grow flex flex-col items-center justify-center text-center px-6 py-32 min-h-[70vh]">
+    <p class="text-8xl font-extrabold text-zaga-cyan mb-6">404</p>
+    <h1 class="text-4xl font-extrabold text-zaga-navy mb-4">{t('notfound.title')}</h1>
+    <p class="text-xl text-gray-600 mb-10 max-w-xl">{t('notfound.desc')}</p>
+    <a href="/" class="px-10 py-4 rounded-lg font-bold text-lg bg-zaga-blue text-white hover:bg-zaga-cyan hover:text-zaga-navy transition-all duration-300 shadow-lg hover:-translate-y-1">
+      {t('notfound.btn')}
+    </a>
+  </section>
+</Layout>
