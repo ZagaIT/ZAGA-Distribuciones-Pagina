@@ -1,0 +1,148 @@
+---
+// Selector de presets de estilo — herramienta temporal de revisión para el cliente.
+// No altera el contenido de las páginas: sólo cambia data-preset en <html>.
+import { getLangFromUrl } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+
+const presets = [
+  {
+    id: 'original',
+    name: 'Original',
+    desc: lang === 'en' ? 'Current corporate blue' : 'Azul corporativo actual',
+    swatch: ['#1E224F', '#0070B8', '#8BD1ED'],
+  },
+  {
+    id: 'neon',
+    name: lang === 'en' ? 'Neon Fuchsia' : 'Neón Fiusha',
+    desc: lang === 'en' ? 'Neon titles, high contrast' : 'Títulos neón, alto contraste',
+    swatch: ['#12071F', '#B01A97', '#FF2FD0'],
+  },
+  {
+    id: 'ambar',
+    name: lang === 'en' ? 'Industrial Amber' : 'Ámbar Industrial',
+    desc: lang === 'en' ? 'Warm, energetic' : 'Cálido y enérgico',
+    swatch: ['#14213D', '#B0480F', '#FFB627'],
+  },
+  {
+    id: 'esmeralda',
+    name: lang === 'en' ? 'Emerald' : 'Esmeralda',
+    desc: lang === 'en' ? 'Fresh, technical' : 'Fresco y técnico',
+    swatch: ['#0B2B26', '#00806A', '#39E0A8'],
+  },
+];
+
+const label = lang === 'en' ? 'Style' : 'Estilo';
+const heading = lang === 'en' ? 'Color presets' : 'Presets de color';
+const note =
+  lang === 'en'
+    ? 'Preview only — for choosing the final look.'
+    : 'Sólo vista previa — para elegir el estilo final.';
+---
+
+<div class="relative pt-4 lg:pt-0 border-t border-white/10 lg:border-none flex items-center">
+  <button
+    id="preset-menu-btn"
+    type="button"
+    aria-haspopup="true"
+    aria-expanded="false"
+    class="flex items-center justify-between w-full lg:w-auto gap-3 bg-white/10 border border-white/20 rounded-xl lg:rounded-lg py-3 px-5 lg:py-2.5 lg:px-4 text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white hover:border-zaga-cyan hover:bg-white/20 transition-all"
+  >
+    <span class="flex items-center gap-2">
+      <span id="preset-dots" class="flex items-center gap-1" aria-hidden="true">
+        <span class="w-2.5 h-2.5 rounded-full ring-1 ring-white/40" style="background: var(--zaga-navy)"></span>
+        <span class="w-2.5 h-2.5 rounded-full ring-1 ring-white/40" style="background: var(--zaga-blue)"></span>
+        <span class="w-2.5 h-2.5 rounded-full ring-1 ring-white/40" style="background: var(--zaga-cyan)"></span>
+      </span>
+      <span class="font-medium tracking-wide">{label}</span>
+    </span>
+    <svg class="w-4 h-4 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+    </svg>
+  </button>
+
+  <div
+    id="preset-dropdown"
+    class="absolute hidden top-full mt-3 w-full lg:w-72 bg-white text-gray-800 rounded-xl shadow-2xl overflow-hidden z-30 border border-gray-100 flex-col right-0"
+  >
+    <div class="px-4 py-3 border-b border-gray-100 bg-gray-50">
+      <p class="text-xs font-bold uppercase tracking-wider text-gray-500">{heading}</p>
+      <p class="text-[11px] text-gray-400 mt-0.5">{note}</p>
+    </div>
+
+    {presets.map((p) => (
+      <button
+        type="button"
+        data-preset-option={p.id}
+        class="preset-option w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center gap-3 transition-colors border-b border-gray-100 last:border-b-0 focus:outline-none focus-visible:bg-gray-100"
+      >
+        <span class="flex flex-shrink-0 rounded-md overflow-hidden ring-1 ring-black/10" aria-hidden="true">
+          {p.swatch.map((c) => (
+            <span class="w-4 h-8 block" style={`background:${c}`}></span>
+          ))}
+        </span>
+        <span class="flex-grow min-w-0">
+          <span class="block font-semibold text-sm text-gray-900">{p.name}</span>
+          <span class="block text-xs text-gray-500 truncate">{p.desc}</span>
+        </span>
+        <svg
+          class="preset-check w-5 h-5 text-green-600 flex-shrink-0 opacity-0"
+          fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+        </svg>
+      </button>
+    ))}
+  </div>
+</div>
+
+<script is:inline>
+  (() => {
+    const btn = document.getElementById('preset-menu-btn');
+    const dropdown = document.getElementById('preset-dropdown');
+    const options = document.querySelectorAll('.preset-option');
+    if (!btn || !dropdown) return;
+
+    const markActive = (id) => {
+      options.forEach((opt) => {
+        const isActive = opt.getAttribute('data-preset-option') === id;
+        opt.querySelector('.preset-check')?.classList.toggle('opacity-0', !isActive);
+        opt.classList.toggle('bg-gray-50', isActive);
+      });
+    };
+
+    const closeMenu = () => {
+      dropdown.classList.add('hidden');
+      dropdown.classList.remove('flex');
+      btn.setAttribute('aria-expanded', 'false');
+    };
+
+    markActive(document.documentElement.dataset.preset || 'original');
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const willOpen = dropdown.classList.contains('hidden');
+      dropdown.classList.toggle('hidden', !willOpen);
+      dropdown.classList.toggle('flex', willOpen);
+      btn.setAttribute('aria-expanded', String(willOpen));
+    });
+
+    options.forEach((opt) => {
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = opt.getAttribute('data-preset-option');
+        document.documentElement.dataset.preset = id;
+        try {
+          localStorage.setItem('zaga-preset', id);
+        } catch (_) {}
+        markActive(id);
+        closeMenu();
+      });
+    });
+
+    document.addEventListener('click', closeMenu);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMenu();
+    });
+  })();
+</script>

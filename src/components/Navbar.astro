@@ -3,6 +3,7 @@ import { getLangFromUrl, useTranslations } from '../i18n/utils';
 import { languages } from '../i18n/ui';
 import { Image } from 'astro:assets';
 import logoZaga from '../assets/logoZaga.png';
+import PresetSwitcher from './PresetSwitcher.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -37,6 +38,9 @@ const pathEn = `/en${currentPath === '/' ? '' : currentPath}`;
       <a href={`${basePath}/servicios`} class="hover:text-zaga-cyan font-medium transition-colors flex items-center text-lg lg:text-base">{t('nav.services')}</a>
       <a href={`${basePath}/marcas`} class="hover:text-zaga-cyan font-medium transition-colors flex items-center text-lg lg:text-base">{t('nav.brands')}</a>
       <a href={`${basePath}/contacto`} class="lg:ml-2 bg-zaga-blue px-6 py-3 lg:py-2.5 rounded-xl lg:rounded-lg hover:bg-zaga-cyan hover:text-zaga-navy font-bold transition-transform hover:-translate-y-0.5 text-center shadow-lg text-lg lg:text-base">{t('nav.contact')}</a>
+
+      <!-- Selector de Presets de Estilo (temporal, para revisión del cliente) -->
+      <PresetSwitcher />
 
       <!-- Selector de Idiomas -->
       <div class="relative pt-4 lg:pt-0 border-t border-white/10 lg:border-none lg:ml-4 flex items-center">

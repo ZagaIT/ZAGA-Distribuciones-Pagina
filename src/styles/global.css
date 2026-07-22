@@ -1,9 +1,87 @@
 @import "tailwindcss";
 
 @theme {
-  --color-zaga-navy: #1E224F;
-  --color-zaga-blue: #0070B8;
-  --color-zaga-cyan: #8BD1ED;
+  --color-zaga-navy: var(--zaga-navy);
+  --color-zaga-blue: var(--zaga-blue);
+  --color-zaga-cyan: var(--zaga-cyan);
+}
+
+/* ==========================================================================
+   PRESETS DE PALETA
+   Cada preset redefine las 3 variables base. Como Tailwind v4 compila
+   bg-zaga-navy / text-zaga-blue / etc. a var(--color-zaga-*), cambiar el
+   atributo data-preset en <html> re-tematiza todo el sitio sin tocar el
+   contenido de las páginas.
+   ========================================================================== */
+
+/* --- 1. Original (corporativo) --- */
+:root,
+[data-preset="original"] {
+  --zaga-navy: #1E224F;
+  --zaga-blue: #0070B8;
+  --zaga-cyan: #8BD1ED;
+
+  /* Degradado del hero */
+  --zaga-hero-mid: #16193b;
+  --zaga-hero-end: #0d456b;
+
+  /* Títulos de tarjetas */
+  --zaga-card-title: var(--zaga-navy);
+  --zaga-card-glow: none;
+  --zaga-card-stroke: transparent;
+  --zaga-card-title-weight: 700;
+  --zaga-card-title-spacing: normal;
+}
+
+/* --- 2. Neón Fiusha (solicitado por el cliente) --- */
+[data-preset="neon"] {
+  --zaga-navy: #12071F;
+  --zaga-blue: #B01A97;
+  --zaga-cyan: #FF2FD0;
+
+  --zaga-hero-mid: #2A0B3D;
+  --zaga-hero-end: #6A0F5C;
+
+  /* Título "doble": relleno fiusha + contorno oscuro + halo neón */
+  --zaga-card-title: #D6009E;
+  --zaga-card-stroke: #12071F;
+  --zaga-card-glow:
+    0 0 6px rgba(255, 47, 208, 0.55),
+    0 0 18px rgba(255, 47, 208, 0.35);
+  --zaga-card-title-weight: 800;
+  --zaga-card-title-spacing: 0.01em;
+}
+
+/* --- 3. Ámbar Industrial --- */
+[data-preset="ambar"] {
+  --zaga-navy: #14213D;
+  --zaga-blue: #B0480F;
+  --zaga-cyan: #FFB627;
+
+  --zaga-hero-mid: #1B2B4D;
+  --zaga-hero-end: #7A3B10;
+
+  --zaga-card-title: var(--zaga-navy);
+  --zaga-card-glow: none;
+  --zaga-card-stroke: transparent;
+  --zaga-card-title-weight: 700;
+  --zaga-card-title-spacing: normal;
+}
+
+/* --- 4. Esmeralda --- */
+[data-preset="esmeralda"] {
+  --zaga-navy: #0B2B26;
+  --zaga-blue: #00806A;
+  --zaga-cyan: #39E0A8;
+
+  --zaga-hero-mid: #0F3A32;
+  --zaga-hero-end: #0A5C4A;
+
+  --zaga-card-title: var(--zaga-navy);
+  --zaga-card-glow: none;
+  --zaga-card-stroke: transparent;
+  --zaga-card-title-weight: 700;
+  --zaga-card-title-spacing: normal;
 }
 
 html {
@@ -12,6 +90,64 @@ html {
 
 body {
   @apply min-h-screen flex flex-col font-sans text-zaga-navy bg-white;
+}
+
+/* Transición suave al cambiar de preset */
+body * {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 300ms;
+  transition-timing-function: ease;
+}
+
+/* --------------------------------------------------------------------------
+   Títulos de tarjetas (Inicio + Servicios)
+   En presets normales se ve idéntico al original. En "neon" aplica el efecto
+   de letra doble con contorno.
+   -------------------------------------------------------------------------- */
+.card-title {
+  color: var(--zaga-card-title);
+  font-weight: var(--zaga-card-title-weight);
+  letter-spacing: var(--zaga-card-title-spacing);
+  -webkit-text-stroke: 0.5px var(--zaga-card-stroke);
+  paint-order: stroke fill;
+  text-shadow: var(--zaga-card-glow);
+}
+
+/* Hover de las tarjetas de Servicios (el original cambiaba a zaga-blue) */
+.group:hover .card-title {
+  color: var(--zaga-blue);
+}
+
+/* En neón el hover intensifica el halo en vez de apagar el color */
+[data-preset="neon"] .group:hover .card-title {
+  color: #FF2FD0;
+  text-shadow:
+    0 0 8px rgba(255, 47, 208, 0.75),
+    0 0 24px rgba(255, 47, 208, 0.45);
+}
+
+/* --------------------------------------------------------------------------
+   Contenedores de iconos: se tiñen con la paleta activa en vez de quedarse
+   en el azul fijo de Tailwind (bg-blue-50).
+   -------------------------------------------------------------------------- */
+.icon-chip {
+  background-color: color-mix(in srgb, var(--zaga-blue) 12%, white);
+  color: var(--zaga-blue);
+}
+
+[data-preset="neon"] .icon-chip {
+  background-color: color-mix(in srgb, var(--zaga-cyan) 14%, white);
+  color: var(--zaga-blue);
+}
+
+/* Degradado del Hero controlado por preset */
+.hero-gradient {
+  background-image: linear-gradient(
+    to bottom right,
+    var(--zaga-navy),
+    var(--zaga-hero-mid),
+    var(--zaga-hero-end)
+  );
 }
 
 /* Animaciones de Scroll (Vanilla JS) */
@@ -34,4 +170,12 @@ body {
 }
 .animate-gradient {
   animation: gradient 15s ease infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body *,
+  .animate-gradient {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }

@@ -121,6 +121,18 @@ const websiteSchema = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Aplica el preset guardado antes del primer render (evita parpadeo) -->
+    <script is:inline>
+      (() => {
+        try {
+          const p = localStorage.getItem('zaga-preset');
+          if (p && ['original', 'neon', 'ambar', 'esmeralda'].includes(p)) {
+            document.documentElement.dataset.preset = p;
+          }
+        } catch (_) {}
+      })();
+    </script>
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
