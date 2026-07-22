@@ -84,6 +84,106 @@
   --zaga-card-title-spacing: normal;
 }
 
+/* ==========================================================================
+   PRESETS TIPOGRÁFICOS (5–8)
+   Reutilizan las paletas de arriba, pero además cambian la fuente display,
+   el tratamiento de los títulos ("wordart") y el estilo de las tarjetas.
+   Pensados para un negocio de material eléctrico: carácter industrial,
+   técnico y de letrero de taller.
+   ========================================================================== */
+
+/* --- 5. Voltaje — fiusha + condensada industrial con relieve --- */
+[data-preset="voltaje"] {
+  --zaga-navy: #12071F;
+  --zaga-blue: #B01A97;
+  --zaga-cyan: #FF2FD0;
+
+  --zaga-hero-mid: #2A0B3D;
+  --zaga-hero-end: #6A0F5C;
+
+  --zaga-card-title: #D6009E;
+  --zaga-card-stroke: transparent;
+  --zaga-card-glow: none;
+  --zaga-card-title-weight: 400;
+  --zaga-card-title-spacing: 0.02em;
+
+  /* Wordart: mayúsculas con sombra dura escalonada (efecto relieve) */
+  --zaga-display-font: var(--font-display-industrial);
+  --zaga-title-transform: uppercase;
+  --zaga-title-shadow:
+    2px 2px 0 #12071F,
+    4px 4px 0 rgba(255, 47, 208, 0.35);
+  --zaga-title-skew: -2deg;
+}
+
+/* --- 6. Alto Voltaje — ámbar + tecnológica angular --- */
+[data-preset="altovoltaje"] {
+  --zaga-navy: #14213D;
+  --zaga-blue: #B0480F;
+  --zaga-cyan: #FFB627;
+
+  --zaga-hero-mid: #1B2B4D;
+  --zaga-hero-end: #7A3B10;
+
+  --zaga-card-title: #14213D;
+  --zaga-card-stroke: transparent;
+  --zaga-card-glow: none;
+  --zaga-card-title-weight: 900;
+  --zaga-card-title-spacing: 0.06em;
+
+  /* Wordart: tracking amplio tipo panel de control */
+  --zaga-display-font: var(--font-display-tech);
+  --zaga-title-transform: uppercase;
+  --zaga-title-shadow: 0 2px 0 rgba(255, 182, 39, 0.55);
+  --zaga-title-skew: 0deg;
+}
+
+/* --- 7. Retro Neón — esmeralda + geométrica de rótulo --- */
+[data-preset="retro"] {
+  --zaga-navy: #0B2B26;
+  --zaga-blue: #00806A;
+  --zaga-cyan: #39E0A8;
+
+  --zaga-hero-mid: #0F3A32;
+  --zaga-hero-end: #0A5C4A;
+
+  --zaga-card-title: #00705C;
+  --zaga-card-stroke: transparent;
+  --zaga-card-glow: none;
+  --zaga-card-title-weight: 400;
+  --zaga-card-title-spacing: 0.01em;
+
+  /* Wordart: contorno suave tipo tubo de neón apagado */
+  --zaga-display-font: var(--font-display-retro);
+  --zaga-title-transform: none;
+  --zaga-title-shadow:
+    0 0 1px rgba(57, 224, 168, 0.9),
+    0 3px 0 rgba(11, 43, 38, 0.18);
+  --zaga-title-skew: 0deg;
+}
+
+/* --- 8. Taller — azul corporativo + letrero pintado --- */
+[data-preset="taller"] {
+  --zaga-navy: #1B2A4A;
+  --zaga-blue: #C1121F;
+  --zaga-cyan: #F6BD3B;
+
+  --zaga-hero-mid: #22335A;
+  --zaga-hero-end: #7A1620;
+
+  --zaga-card-title: #1B2A4A;
+  --zaga-card-stroke: transparent;
+  --zaga-card-glow: none;
+  --zaga-card-title-weight: 400;
+  --zaga-card-title-spacing: 0.01em;
+
+  /* Wordart: bloque sólido con sombra plana, como rótulo de taller */
+  --zaga-display-font: var(--font-display-taller);
+  --zaga-title-transform: uppercase;
+  --zaga-title-shadow: 3px 3px 0 rgba(246, 189, 59, 0.85);
+  --zaga-title-skew: 0deg;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -124,6 +224,102 @@ body * {
   text-shadow:
     0 0 8px rgba(255, 47, 208, 0.75),
     0 0 24px rgba(255, 47, 208, 0.45);
+}
+
+/* --------------------------------------------------------------------------
+   Wordart de los presets tipográficos.
+   Sólo se activa cuando el preset define --zaga-display-font, así los
+   presets 1–4 conservan su aspecto original sin tocar nada.
+   -------------------------------------------------------------------------- */
+[data-preset="voltaje"],
+[data-preset="altovoltaje"],
+[data-preset="retro"],
+[data-preset="taller"] {
+  --zaga-display-on: 1;
+}
+
+[data-preset="voltaje"] .card-title,
+[data-preset="altovoltaje"] .card-title,
+[data-preset="retro"] .card-title,
+[data-preset="taller"] .card-title,
+[data-preset="voltaje"] .display-title,
+[data-preset="altovoltaje"] .display-title,
+[data-preset="retro"] .display-title,
+[data-preset="taller"] .display-title {
+  font-family: var(--zaga-display-font), Impact, "Arial Black", sans-serif;
+  text-transform: var(--zaga-title-transform);
+  text-shadow: var(--zaga-title-shadow);
+  transform: skewX(var(--zaga-title-skew));
+  line-height: 1.12;
+  /* Las display traen su propio peso; el font-weight de Tailwind las
+     falsearía en negrita sobre una fuente que ya es negra. */
+  font-weight: 400;
+}
+
+/* Las display tienen altura-x menor: se compensa para que el título
+   siga dominando sobre el párrafo. */
+[data-preset="voltaje"] .card-title,
+[data-preset="altovoltaje"] .card-title,
+[data-preset="retro"] .card-title,
+[data-preset="taller"] .card-title {
+  font-size: 1.35rem;
+  display: block;
+}
+
+@media (min-width: 768px) {
+  [data-preset="voltaje"] .card-title,
+  [data-preset="altovoltaje"] .card-title,
+  [data-preset="retro"] .card-title,
+  [data-preset="taller"] .card-title {
+    font-size: 1.6rem;
+  }
+}
+
+/* Bungee y Orbitron son muy anchas en mayúsculas: se ajusta el tracking
+   para que los títulos de dos palabras no se desborden. */
+[data-preset="taller"] .card-title,
+[data-preset="altovoltaje"] .card-title {
+  letter-spacing: 0;
+  word-spacing: -0.05em;
+}
+
+/* El skew necesita un bloque propio para no arrastrar el texto adyacente */
+[data-preset="voltaje"] .card-title {
+  transform-origin: left center;
+  /* deja aire para la sombra escalonada y el descendente inclinado */
+  padding-bottom: 0.12em;
+}
+
+/* Nombre de la marca en la navbar y el hero */
+[data-preset="voltaje"] .brand-word,
+[data-preset="altovoltaje"] .brand-word,
+[data-preset="retro"] .brand-word,
+[data-preset="taller"] .brand-word {
+  font-family: var(--zaga-display-font), Impact, "Arial Black", sans-serif;
+  letter-spacing: 0.08em;
+  font-weight: 400;
+}
+
+/* Botones con más carácter en los presets tipográficos */
+[data-preset="voltaje"] .cta-btn,
+[data-preset="altovoltaje"] .cta-btn,
+[data-preset="retro"] .cta-btn,
+[data-preset="taller"] .cta-btn {
+  font-family: var(--zaga-display-font), Impact, "Arial Black", sans-serif;
+  text-transform: var(--zaga-title-transform);
+  letter-spacing: 0.04em;
+  font-weight: 400;
+}
+
+/* Taller: tarjetas con borde marcado, como letrero */
+[data-preset="taller"] .card-surface {
+  border: 3px solid var(--zaga-navy);
+  box-shadow: 6px 6px 0 rgba(27, 42, 74, 0.18);
+}
+
+/* Alto Voltaje: acento superior tipo panel */
+[data-preset="altovoltaje"] .card-surface {
+  border-top: 4px solid var(--zaga-cyan);
 }
 
 /* --------------------------------------------------------------------------

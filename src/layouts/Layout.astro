@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { Font } from 'astro:assets';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
@@ -127,7 +128,8 @@ const websiteSchema = {
       (() => {
         try {
           const p = localStorage.getItem('zaga-preset');
-          if (p && ['original', 'neon', 'ambar', 'esmeralda'].includes(p)) {
+          if (p && ['original', 'neon', 'ambar', 'esmeralda',
+                    'voltaje', 'altovoltaje', 'retro', 'taller'].includes(p)) {
             document.documentElement.dataset.preset = p;
           }
         } catch (_) {}
@@ -172,6 +174,12 @@ const websiteSchema = {
     <meta name="theme-color" content="#1E224F" />
 
     <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Fuentes display de los presets tipográficos (auto-hospedadas) -->
+    <Font cssVariable="--font-display-industrial" />
+    <Font cssVariable="--font-display-retro" />
+    <Font cssVariable="--font-display-tech" />
+    <Font cssVariable="--font-display-taller" />
 
     <!-- Datos estructurados schema.org -->
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />

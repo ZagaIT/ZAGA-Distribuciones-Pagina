@@ -24,7 +24,7 @@ const t = useTranslations(lang);
         
         <h1 class="text-5xl sm:text-6xl md:text-8xl font-extrabold mb-8 tracking-tight leading-tight">
           <span class="block text-zaga-cyan text-xl sm:text-2xl md:text-3xl mb-4 font-semibold tracking-widest uppercase">{t('hero.title')}</span>
-          <span class="text-transparent bg-clip-text bg-gradient-to-br from-white via-blue-50 to-zaga-cyan">{t('company.name')}</span>
+          <span class="brand-word text-transparent bg-clip-text bg-gradient-to-br from-white via-blue-50 to-zaga-cyan">{t('company.name')}</span>
         </h1>
         
         <p class="text-lg md:text-2xl text-blue-50 mb-12 max-w-3xl mx-auto leading-relaxed font-light text-balance">
@@ -33,10 +33,10 @@ const t = useTranslations(lang);
 
         <!-- Call To Actions -->
         <div class="flex flex-col sm:flex-row items-center justify-center gap-5 w-full sm:w-auto">
-          <a href={lang === 'en' ? '/en/contacto' : '/contacto'} class="w-full sm:w-auto px-10 py-4 rounded-lg font-bold text-lg bg-zaga-blue text-white hover:bg-zaga-cyan hover:text-zaga-navy transition-all duration-300 shadow-[0_4px_20px_rgba(0,112,184,0.4)] hover:shadow-[0_4px_25px_rgba(139,209,237,0.6)] hover:-translate-y-1">
+          <a href={lang === 'en' ? '/en/contacto' : '/contacto'} class="cta-btn w-full sm:w-auto px-10 py-4 rounded-lg font-bold text-lg bg-zaga-blue text-white hover:bg-zaga-cyan hover:text-zaga-navy transition-all duration-300 shadow-[0_4px_20px_rgba(0,112,184,0.4)] hover:shadow-[0_4px_25px_rgba(139,209,237,0.6)] hover:-translate-y-1">
             {t('company.cta.quote')}
           </a>
-          <a href={lang === 'en' ? '/en/servicios' : '/servicios'} class="w-full sm:w-auto px-10 py-4 rounded-lg font-bold text-lg bg-white text-zaga-navy hover:bg-blue-50 transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
+          <a href={lang === 'en' ? '/en/servicios' : '/servicios'} class="cta-btn w-full sm:w-auto px-10 py-4 rounded-lg font-bold text-lg bg-white text-zaga-navy hover:bg-blue-50 transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
             {t('company.cta.services')}
           </a>
         </div>
@@ -48,7 +48,7 @@ const t = useTranslations(lang);
       <div class="max-w-7xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 relative -mt-32 md:-mt-40 z-20">
           
-          <div class="animate-on-scroll bg-white p-10 rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-2">
+          <div class="card-surface animate-on-scroll bg-white p-10 rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-2">
             <div class="w-20 h-20 icon-chip rounded-2xl flex items-center justify-center mb-8 rotate-3 hover:rotate-6 transition-transform">
               <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             </div>
@@ -56,7 +56,7 @@ const t = useTranslations(lang);
             <p class="text-gray-600 text-lg leading-relaxed">{t('feature.quote.desc')}</p>
           </div>
 
-          <div class="animate-on-scroll bg-white p-10 rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-2" style="transition-delay: 100ms;">
+          <div class="card-surface animate-on-scroll bg-white p-10 rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-2" style="transition-delay: 100ms;">
             <div class="w-20 h-20 icon-chip rounded-2xl flex items-center justify-center mb-8 -rotate-3 hover:-rotate-6 transition-transform">
               <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             </div>
@@ -64,7 +64,7 @@ const t = useTranslations(lang);
             <p class="text-gray-600 text-lg leading-relaxed">{t('feature.delivery.desc')}</p>
           </div>
 
-          <div class="animate-on-scroll bg-white p-10 rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-2" style="transition-delay: 200ms;">
+          <div class="card-surface animate-on-scroll bg-white p-10 rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-2" style="transition-delay: 200ms;">
             <div class="w-20 h-20 icon-chip rounded-2xl flex items-center justify-center mb-8 rotate-3 hover:rotate-6 transition-transform">
               <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
             </div>
@@ -79,7 +79,7 @@ const t = useTranslations(lang);
     <!-- Conoce ZAGA -->
     <section class="py-24 px-6 bg-white overflow-hidden relative">
       <div class="max-w-4xl mx-auto text-center animate-on-scroll">
-        <h2 class="text-4xl lg:text-5xl font-extrabold text-zaga-navy mb-8 relative inline-block">
+        <h2 class="display-title text-4xl lg:text-5xl font-extrabold text-zaga-navy mb-8 relative inline-block">
           {t('home.about.title')}
           <span class="absolute -bottom-2 left-1/4 right-1/4 h-1.5 bg-zaga-cyan rounded-full"></span>
         </h2>

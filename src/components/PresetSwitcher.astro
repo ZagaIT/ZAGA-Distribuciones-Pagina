@@ -32,8 +32,37 @@ const presets = [
   },
 ];
 
+// Presets que además cambian la tipografía y el tratamiento de los títulos
+const typePresets = [
+  {
+    id: 'voltaje',
+    name: 'Voltaje',
+    desc: lang === 'en' ? 'Fuchsia + embossed titles' : 'Fiusha + títulos en relieve',
+    swatch: ['#12071F', '#B01A97', '#FF2FD0'],
+  },
+  {
+    id: 'altovoltaje',
+    name: lang === 'en' ? 'High Voltage' : 'Alto Voltaje',
+    desc: lang === 'en' ? 'Amber + tech type' : 'Ámbar + letra tecnológica',
+    swatch: ['#14213D', '#B0480F', '#FFB627'],
+  },
+  {
+    id: 'retro',
+    name: lang === 'en' ? 'Retro Sign' : 'Retro Neón',
+    desc: lang === 'en' ? 'Emerald + rounded sign type' : 'Esmeralda + letra de rótulo',
+    swatch: ['#0B2B26', '#00806A', '#39E0A8'],
+  },
+  {
+    id: 'taller',
+    name: lang === 'en' ? 'Workshop' : 'Taller',
+    desc: lang === 'en' ? 'Red/yellow + painted sign' : 'Rojo/amarillo + letrero pintado',
+    swatch: ['#1B2A4A', '#C1121F', '#F6BD3B'],
+  },
+];
+
 const label = lang === 'en' ? 'Style' : 'Estilo';
 const heading = lang === 'en' ? 'Color presets' : 'Presets de color';
+const headingType = lang === 'en' ? 'Color + typography' : 'Color + tipografía';
 const note =
   lang === 'en'
     ? 'Preview only — for choosing the final look.'
@@ -71,6 +100,34 @@ const note =
     </div>
 
     {presets.map((p) => (
+      <button
+        type="button"
+        data-preset-option={p.id}
+        class="preset-option w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center gap-3 transition-colors border-b border-gray-100 focus:outline-none focus-visible:bg-gray-100"
+      >
+        <span class="flex flex-shrink-0 rounded-md overflow-hidden ring-1 ring-black/10" aria-hidden="true">
+          {p.swatch.map((c) => (
+            <span class="w-4 h-8 block" style={`background:${c}`}></span>
+          ))}
+        </span>
+        <span class="flex-grow min-w-0">
+          <span class="block font-semibold text-sm text-gray-900">{p.name}</span>
+          <span class="block text-xs text-gray-500 truncate">{p.desc}</span>
+        </span>
+        <svg
+          class="preset-check w-5 h-5 text-green-600 flex-shrink-0 opacity-0"
+          fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+        </svg>
+      </button>
+    ))}
+
+    <div class="px-4 py-3 border-y border-gray-100 bg-gray-50">
+      <p class="text-xs font-bold uppercase tracking-wider text-gray-500">{headingType}</p>
+    </div>
+
+    {typePresets.map((p) => (
       <button
         type="button"
         data-preset-option={p.id}
