@@ -7,13 +7,11 @@ export const SITE = {
   name: 'ZAGA Distribuciones',
   legalName: 'ZAGA Distribuciones',
 
-  // TODO: Completar con la dirección física exacta (calle y número, C.P.)
-  // para mejorar el SEO local (Google Maps / búsquedas "cerca de mí").
   address: {
-    streetAddress: '',
+    streetAddress: 'Héroes de Chapultepec 1507 Norte',
     locality: 'Tampico',
     region: 'Tamaulipas',
-    postalCode: '',
+    postalCode: '89060',
     countryCode: 'MX',
   },
 
@@ -35,11 +33,10 @@ export const SITE = {
   // Agregar las URLs completas cuando existan; alimentan el "sameAs" de schema.org.
   socialProfiles: [] as string[],
 
-  // Coordenadas geográficas del local (opcional, mejora el SEO local).
-  // Obtenerlas en Google Maps: clic derecho sobre el punto → copiar coordenadas.
+  // Coordenadas geográficas del local (mejoran el SEO local).
   geo: {
-    latitude: null as number | null,
-    longitude: null as number | null,
+    latitude: 22.2246084 as number | null,
+    longitude: -97.8442978 as number | null,
   },
 
   ogImage: '/og-image.png',
