@@ -118,7 +118,7 @@ const websiteSchema = {
 ---
 
 <!DOCTYPE html>
-<html lang={lang}>
+<html lang={lang} data-preset="neon">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -128,8 +128,7 @@ const websiteSchema = {
       (() => {
         try {
           const p = localStorage.getItem('zaga-preset');
-          if (p && ['original', 'neon', 'ambar', 'esmeralda',
-                    'voltaje', 'altovoltaje', 'retro', 'taller'].includes(p)) {
+          if (p && ['neon', 'voltaje', 'original'].includes(p)) {
             document.documentElement.dataset.preset = p;
           }
         } catch (_) {}
@@ -175,11 +174,8 @@ const websiteSchema = {
 
     <link rel="sitemap" href="/sitemap-index.xml" />
 
-    <!-- Fuentes display de los presets tipográficos (auto-hospedadas) -->
+    <!-- Fuente display del preset Voltaje (auto-hospedada) -->
     <Font cssVariable="--font-display-industrial" />
-    <Font cssVariable="--font-display-retro" />
-    <Font cssVariable="--font-display-tech" />
-    <Font cssVariable="--font-display-taller" />
 
     <!-- Datos estructurados schema.org -->
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
