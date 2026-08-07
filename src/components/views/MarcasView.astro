@@ -468,6 +468,9 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
               const count = marcas.filter((m) => m.categoria === cat.id).length;
               return (
                 <button type="button" class="marca-filtro" data-filtro={cat.id} aria-pressed="false">
+                  <svg class="marca-filtro-check" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  </svg>
                   {t(cat.titleKey as any)}
                   <span class="marca-filtro-count">{count}</span>
                 </button>
@@ -476,8 +479,8 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
           </div>
         </div>
 
-        <!-- Descripción de la categoría activa -->
-        <div class="max-w-3xl mx-auto text-center mb-10 min-h-[3.5rem]">
+        <!-- Descripción de la categoría activa (solo con una sola seleccionada) -->
+        <div id="marcas-cat-desc" class="marca-cat-desc-wrap is-empty max-w-3xl mx-auto text-center">
           {categorias.map((cat) => (
             <p class="marca-cat-desc text-gray-600 leading-relaxed hidden" data-desc={cat.id}>
               {t(cat.descKey as any)}
@@ -486,7 +489,7 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
         </div>
 
         <!-- Grilla de marcas -->
-        <div id="marcas-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div id="marcas-grid" class="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {marcas.map((marca) => {
             const logo = getBrandLogo(marca.name);
             const Tag = marca.url ? 'a' : 'div';
@@ -617,6 +620,34 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
     background: rgba(255, 255, 255, 0.2);
     color: white;
   }
+  /*
+   * La palomita indica que el filtro es de selección múltiple. Ocupa su
+   * espacio solo cuando la categoría está activa, así el chip crece en vez
+   * de reservar un hueco vacío permanente.
+   */
+  .marca-filtro-check {
+    width: 0;
+    height: 0.875rem;
+    opacity: 0;
+    overflow: hidden;
+    transition: width 0.2s ease, opacity 0.2s ease, margin-right 0.2s ease;
+  }
+  .marca-filtro.is-active .marca-filtro-check {
+    width: 0.875rem;
+    opacity: 1;
+  }
+
+  /*
+   * Contenedor de la descripción de categoría. Solo separa de la grilla
+   * cuando hay algo que mostrar (una única categoría activa); si está vacío
+   * se colapsa para no dejar un hueco entre los filtros y las tarjetas.
+   */
+  .marca-cat-desc-wrap {
+    margin-bottom: 2.5rem;
+  }
+  .marca-cat-desc-wrap.is-empty {
+    margin-bottom: 0;
+  }
 
   /* ── Tarjeta de marca ── */
   .marca-card {
@@ -699,13 +730,14 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
   }
 
   /*
-   * Durante la animación de salida la tarjeta debe seguir ocupando su lugar
-   * (si se quitara del flujo, las demás saltarían de golpe). Se mantiene
-   * visible pero sin capturar clics hasta que termina de desvanecerse.
+   * Copia superpuesta de una tarjeta que se está yendo. El original se retira
+   * del flujo al instante —para que las demás empiecen a moverse enseguida— y
+   * este clon se queda desvaneciéndose sobre su posición anterior.
    */
-  .marca-card.is-leaving {
+  .marca-card.is-ghost {
     pointer-events: none;
-    z-index: 0;
+    margin: 0;
+    z-index: 1;
   }
 
   /* Sin animación de reacomodo si el usuario la desactivó en su sistema */
@@ -718,44 +750,49 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
 
 <script>
   /**
-   * Filtrado de marcas por categoría con animación FLIP.
+   * Filtrado de marcas con selección múltiple y animación FLIP.
    *
    * FLIP = First, Last, Invert, Play: se mide la posición de cada tarjeta antes
-   * y después de filtrar, y se anima la diferencia. Así las tarjetas que siguen
-   * visibles se "deslizan" a su nueva posición en lugar de saltar.
+   * y después de filtrar y se anima la diferencia, de modo que las tarjetas
+   * viajan visiblemente hasta su nuevo lugar en vez de saltar.
+   *
+   * Se pueden activar varias categorías a la vez; sin ninguna activa se
+   * muestran todas (así el usuario nunca acaba ante una página vacía).
    */
   function initFiltroMarcas() {
     const grid = document.getElementById('marcas-grid');
-    const botones = document.querySelectorAll<HTMLButtonElement>('.marca-filtro');
+    const botones = Array.from(document.querySelectorAll<HTMLButtonElement>('.marca-filtro'));
     if (!grid || botones.length === 0) return;
 
     const cards = Array.from(grid.querySelectorAll<HTMLElement>('.marca-card'));
-    const descripciones = document.querySelectorAll<HTMLElement>('.marca-cat-desc');
+    const descripciones = Array.from(document.querySelectorAll<HTMLElement>('.marca-cat-desc'));
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const DURACION = 420;
+    const MOVER = 620;   // viaje de las tarjetas que se reacomodan
+    const SALIR = 260;   // desvanecido de las que se van
+    const ENTRAR = 480;  // aparición de las que llegan
+    const PASO = 26;     // retraso incremental entre tarjetas (efecto cascada)
     const SUAVIZADO = 'cubic-bezier(0.22, 1, 0.36, 1)';
-    // Animaciones en curso, para poder cancelarlas si se filtra otra vez antes
-    // de que terminen (si no, una tarjeta podría quedarse a medio camino).
+
+    // Categorías activas. Vacío = mostrar todas.
+    const seleccion = new Set<string>();
     let enCurso: Animation[] = [];
 
-    function aplicarFiltro(filtro: string) {
-      // Cortar cualquier animación pendiente del filtro anterior.
+    const visible = (card: HTMLElement) =>
+      seleccion.size === 0 || seleccion.has(card.dataset.categoria || '');
+
+    function aplicarFiltro() {
       for (const anim of enCurso) anim.cancel();
       enCurso = [];
       for (const card of cards) card.classList.remove('is-leaving');
 
-      const coincide = (card: HTMLElement) =>
-        filtro === 'all' || card.dataset.categoria === filtro;
-
-      // Sin animación: mostrar y ocultar directamente.
       if (reduceMotion) {
-        for (const card of cards) card.classList.toggle('is-hidden', !coincide(card));
-        actualizarTextos(filtro);
+        for (const card of cards) card.classList.toggle('is-hidden', !visible(card));
+        actualizarTextos();
         return;
       }
 
-      // FIRST: posición de las tarjetas visibles antes de filtrar.
+      // FIRST: posiciones antes de tocar nada.
       const posiciones = new Map<HTMLElement, DOMRect>();
       for (const card of cards) {
         if (!card.classList.contains('is-hidden')) {
@@ -763,102 +800,164 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
         }
       }
 
+      // Fijar la altura actual del contenedor para poder animarla después.
+      const altoPrevio = grid.getBoundingClientRect().height;
+
       const entrantes: HTMLElement[] = [];
       const salientes: HTMLElement[] = [];
+      const permanecen: HTMLElement[] = [];
       for (const card of cards) {
-        const visible = !card.classList.contains('is-hidden');
-        if (coincide(card) && !visible) entrantes.push(card);
-        else if (!coincide(card) && visible) salientes.push(card);
+        const estaVisible = !card.classList.contains('is-hidden');
+        const deberia = visible(card);
+        if (deberia && !estaVisible) entrantes.push(card);
+        else if (!deberia && estaVisible) salientes.push(card);
+        else if (deberia && estaVisible) permanecen.push(card);
       }
 
-      // Las tarjetas que salen se mantienen en el flujo mientras se desvanecen,
-      // así el reacomodo del resto se ve continuo en lugar de a saltos.
-      for (const card of salientes) card.classList.add('is-leaving');
+      // Las salientes dejan el flujo de inmediato: así el resto puede ocupar su
+      // lugar y el movimiento se aprecia. Se siguen viendo mientras se apagan,
+      // superpuestas en su posición original.
+      for (const card of salientes) {
+        const caja = posiciones.get(card);
+        card.classList.add('is-hidden');
+        if (!caja) continue;
+        const contenedor = grid.getBoundingClientRect();
+        const fantasma = card.cloneNode(true) as HTMLElement;
+        fantasma.classList.remove('is-hidden');
+        fantasma.classList.add('is-ghost');
+        fantasma.style.position = 'absolute';
+        fantasma.style.top = `${caja.top - contenedor.top}px`;
+        fantasma.style.left = `${caja.left - contenedor.left}px`;
+        fantasma.style.width = `${caja.width}px`;
+        fantasma.style.height = `${caja.height}px`;
+        grid.appendChild(fantasma);
+        const anim = fantasma.animate(
+          [
+            { opacity: 1, transform: 'scale(1)' },
+            { opacity: 0, transform: 'scale(0.92)' },
+          ],
+          { duration: SALIR, easing: 'ease-out', fill: 'forwards' }
+        );
+        enCurso.push(anim);
+        anim.finished.then(() => fantasma.remove()).catch(() => fantasma.remove());
+      }
 
-      // Se revela lo que entra para poder medir su posición final.
+      // Revelar las entrantes para medir su posición final.
       for (const card of entrantes) card.classList.remove('is-hidden');
 
-      // LAST + INVERT + PLAY: las que permanecen se deslizan a su nuevo sitio.
-      for (const card of cards) {
-        if (card.classList.contains('is-hidden')) continue;
-        if (entrantes.includes(card) || salientes.includes(card)) continue;
+      // LAST + INVERT + PLAY.
+      // Un salto de varias pantallas animado como desplazamiento se ve como un
+      // borrón cruzando la página, así que por encima de este umbral la tarjeta
+      // aparece en su sitio en lugar de viajar.
+      const VIAJE_MAXIMO = window.innerHeight * 1.1;
+      const movimientos: { card: HTMLElement; dx: number; dy: number }[] = [];
+      for (const card of permanecen) {
         const antes = posiciones.get(card);
         if (!antes) continue;
         const ahora = card.getBoundingClientRect();
         const dx = antes.left - ahora.left;
         const dy = antes.top - ahora.top;
-        if (dx === 0 && dy === 0) continue;
+        if (Math.abs(dx) < 1 && Math.abs(dy) < 1) continue;
+        if (Math.hypot(dx, dy) > VIAJE_MAXIMO) {
+          entrantes.push(card);
+          continue;
+        }
+        movimientos.push({ card, dx, dy });
+      }
 
+      // El retraso crece con la distancia recorrida: las tarjetas que menos se
+      // mueven arrancan antes y el conjunto fluye en cascada.
+      movimientos.sort((a, b) => Math.hypot(a.dx, a.dy) - Math.hypot(b.dx, b.dy));
+      movimientos.forEach(({ card, dx, dy }, i) => {
         enCurso.push(
           card.animate(
             [
               { transform: `translate(${dx}px, ${dy}px)` },
               { transform: 'translate(0, 0)' },
             ],
-            { duration: DURACION, easing: SUAVIZADO }
+            {
+              duration: MOVER,
+              easing: SUAVIZADO,
+              delay: Math.min(i * (PASO / 3), 160),
+            }
+          )
+        );
+      });
+
+      // Animar la altura del contenedor para que el pie de página no dé un salto.
+      const altoNuevo = grid.getBoundingClientRect().height;
+      if (Math.abs(altoNuevo - altoPrevio) > 1) {
+        enCurso.push(
+          grid.animate(
+            [{ height: `${altoPrevio}px` }, { height: `${altoNuevo}px` }],
+            { duration: MOVER, easing: SUAVIZADO }
           )
         );
       }
 
-      // Las que salen se desvanecen y encogen; al terminar se quitan del flujo.
-      for (const card of salientes) {
-        const anim = card.animate(
-          [
-            { opacity: 1, transform: 'scale(1)' },
-            { opacity: 0, transform: 'scale(0.94)' },
-          ],
-          { duration: DURACION * 0.5, easing: 'ease-out', fill: 'forwards' }
-        );
-        enCurso.push(anim);
-        anim.finished
-          .then(() => {
-            card.classList.add('is-hidden');
-            card.classList.remove('is-leaving');
-            anim.cancel(); // libera el fill para no dejar la tarjeta transparente
-          })
-          .catch(() => {
-            // La animación fue cancelada por un filtro nuevo: no hay nada que hacer.
-          });
-      }
-
-      // Las que entran aparecen con un leve ascenso, ya en su posición final.
-      for (const card of entrantes) {
+      // Las entrantes aparecen escalonadas, después de que el hueco se abrió.
+      entrantes.forEach((card, i) => {
         enCurso.push(
           card.animate(
             [
-              { opacity: 0, transform: 'translateY(12px) scale(0.97)' },
+              { opacity: 0, transform: 'translateY(14px) scale(0.96)' },
               { opacity: 1, transform: 'translateY(0) scale(1)' },
             ],
-            { duration: DURACION, easing: SUAVIZADO, delay: DURACION * 0.15 }
+            {
+              duration: ENTRAR,
+              easing: SUAVIZADO,
+              delay: SALIR * 0.6 + Math.min(i * PASO, 320),
+              fill: 'backwards',
+            }
           )
         );
-      }
+      });
 
-      actualizarTextos(filtro);
+      actualizarTextos();
     }
 
-    function actualizarTextos(filtro: string) {
-      // Mostrar la descripción de la categoría activa.
+    function actualizarTextos() {
+      // Con una sola categoría activa se muestra su descripción; con varias no,
+      // porque apilar párrafos empujaría la grilla y estorbaría la lectura.
+      const unica = seleccion.size === 1 ? [...seleccion][0] : null;
       for (const desc of descripciones) {
-        desc.classList.toggle('hidden', desc.dataset.desc !== filtro);
+        desc.classList.toggle('hidden', desc.dataset.desc !== unica);
       }
+      // Colapsar el contenedor cuando no hay descripción visible.
+      document
+        .getElementById('marcas-cat-desc')
+        ?.classList.toggle('is-empty', unica === null);
 
-      // Estado visual y accesible de los botones.
       for (const boton of botones) {
-        const activo = boton.dataset.filtro === filtro;
+        const filtro = boton.dataset.filtro || '';
+        const activo =
+          filtro === 'all' ? seleccion.size === 0 : seleccion.has(filtro);
         boton.classList.toggle('is-active', activo);
         boton.setAttribute('aria-pressed', String(activo));
       }
     }
 
     for (const boton of botones) {
-      boton.addEventListener('click', () => aplicarFiltro(boton.dataset.filtro || 'all'));
+      const filtro = boton.dataset.filtro || '';
+      // "Todas" limpia la selección; las demás alternan.
+      boton.setAttribute('aria-pressed', String(filtro === 'all'));
+      boton.addEventListener('click', () => {
+        if (filtro === 'all') seleccion.clear();
+        else if (seleccion.has(filtro)) seleccion.delete(filtro);
+        else seleccion.add(filtro);
+        aplicarFiltro();
+      });
     }
 
-    // Permite enlazar directo a una categoría: /marcas#control
+    // Permite enlazar a una o varias categorías: /marcas#control,iluminacion
     const desdeHash = window.location.hash.slice(1);
-    if (desdeHash && Array.from(botones).some((b) => b.dataset.filtro === desdeHash)) {
-      aplicarFiltro(desdeHash);
+    if (desdeHash) {
+      const validas = new Set(botones.map((b) => b.dataset.filtro));
+      for (const parte of desdeHash.split(',')) {
+        const id = decodeURIComponent(parte.trim());
+        if (id && id !== 'all' && validas.has(id)) seleccion.add(id);
+      }
+      if (seleccion.size > 0) aplicarFiltro();
     }
   }
 
