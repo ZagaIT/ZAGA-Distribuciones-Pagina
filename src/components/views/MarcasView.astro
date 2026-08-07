@@ -3,52 +3,10 @@ import Layout from '../../layouts/Layout.astro';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
+import { marcas, categorias } from '../../data/marcas';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-
-const catalogCategories = [
-  {
-    titleKey: "brands.cat.title.conductores",
-    descKey: "brands.cat.conductores",
-    brands: ['CONDUMEX', 'ARGOS', 'VIAKON', 'Indiana Wire & Cable', 'General Cable', 'Condulac', 'KOBREX']
-  },
-  {
-    titleKey: "brands.cat.title.tuberia",
-    descKey: "brands.cat.tuberia",
-    brands: ['Crouse-Hinds by EATON', 'KILLARK', 'RAWELT', 'Appleton', 'CONDUCCASA', 'Ternium', 'Hylsa', 'INDALUM', 'Thomas & Betts']
-  },
-  {
-    titleKey: "brands.cat.title.control",
-    descKey: "brands.cat.control",
-    brands: ['SQUARE D', 'SIEMENS', 'ABB', 'OMRON', 'Allen-Bradley', 'MOELLER', 'BALLUFF', 'ARROW HART', 'LEVITON', 'bticino']
-  },
-  {
-    titleKey: "brands.cat.title.iluminacion",
-    descKey: "brands.cat.iluminacion",
-    brands: ['PHILCO-SLP-BRILLA-MAX', 'tecnolite', 'PHILIPS Lighting', 'Dimas Lighting', 'MAGG', 'LAITING']
-  },
-  {
-    titleKey: "brands.cat.title.proteccion",
-    descKey: "brands.cat.proteccion",
-    brands: ['TOTAL GROUND', 'AMESA', 'ENERGAIN', 'TECNOLED PLUS']
-  },
-  {
-    titleKey: "brands.cat.title.ferreteria",
-    descKey: "brands.cat.ferreteria",
-    brands: ['TRUPER', 'VOLTECK', 'PRETUL', 'FOSET', 'FIERO', 'Klintek', 'HERMEX']
-  },
-  {
-    titleKey: "brands.cat.title.construccion",
-    descKey: "brands.cat.construccion",
-    brands: ['Holcim', 'HELVEX', 'RUGO', 'APASCO', 'LAMOSA', 'CATO', 'Fester', 'CREST', 'cemix', 'Berel', 'Sayer', 'Comex', 'BEHR']
-  },
-  {
-    titleKey: "brands.cat.title.varios",
-    descKey: "brands.cat.varios",
-    brands: ['3M']
-  }
-];
 
 const logos = import.meta.glob<{ default: ImageMetadata }>('/src/assets/marcas/*.{png,jpg,jpeg,svg,webp}', { eager: true });
 
@@ -491,32 +449,85 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
           <p class="mt-4 text-gray-600 text-lg max-w-3xl mx-auto">{t('brands.catalog.intro')}</p>
         </div>
 
-        <div class="space-y-16">
-          {catalogCategories.map((category) => (
-            <div class="animate-on-scroll">
-              <h3 class="text-2xl font-bold text-zaga-navy mb-4 border-b-2 border-zaga-cyan/30 pb-3 flex items-center gap-3">
-                <span class="w-2 h-6 bg-zaga-cyan rounded-full"></span>
-                {t(category.titleKey as any)}
-              </h3>
-              <p class="text-gray-600 text-lg leading-relaxed mb-8 max-w-4xl">
-                {t(category.descKey as any)}
-              </p>
-              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {category.brands.map((brand) => {
-                  const logo = getBrandLogo(brand);
-                  return (
-                    <div class="aspect-square bg-gray-50 border border-gray-200/60 rounded-xl shadow-sm hover:shadow-lg flex items-center justify-center p-4 transition-all duration-300 hover:-translate-y-1 hover:border-zaga-blue group">
-                      {logo ? (
-                        <Image src={logo} alt={`${brand} Logo`} class="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
-                      ) : (
-                        <span class="font-bold text-gray-400 text-center tracking-wider text-sm sm:text-base group-hover:text-zaga-navy transition-colors">{brand}</span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+        <!-- Filtros por categoría (sticky al hacer scroll) -->
+        <div
+          id="marcas-filtros"
+          class="sticky top-16 z-30 -mx-6 px-6 py-4 mb-10 bg-white/90 backdrop-blur-md border-b border-gray-100"
+        >
+          <div class="marca-filtros-scroll" role="group" aria-label={t('brands.filter.label')}>
+            <button
+              type="button"
+              class="marca-filtro is-active"
+              data-filtro="all"
+              aria-pressed="true"
+            >
+              {t('brands.filter.all')}
+              <span class="marca-filtro-count">{marcas.length}</span>
+            </button>
+            {categorias.map((cat) => {
+              const count = marcas.filter((m) => m.categoria === cat.id).length;
+              return (
+                <button type="button" class="marca-filtro" data-filtro={cat.id} aria-pressed="false">
+                  {t(cat.titleKey as any)}
+                  <span class="marca-filtro-count">{count}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <!-- Descripción de la categoría activa -->
+        <div class="max-w-3xl mx-auto text-center mb-10 min-h-[3.5rem]">
+          {categorias.map((cat) => (
+            <p class="marca-cat-desc text-gray-600 leading-relaxed hidden" data-desc={cat.id}>
+              {t(cat.descKey as any)}
+            </p>
           ))}
+        </div>
+
+        <!-- Grilla de marcas -->
+        <div id="marcas-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {marcas.map((marca) => {
+            const logo = getBrandLogo(marca.name);
+            const Tag = marca.url ? 'a' : 'div';
+            const linkAttrs = marca.url
+              ? { href: marca.url, target: '_blank', rel: 'noopener noreferrer' }
+              : {};
+            return (
+              <Tag {...linkAttrs} class="marca-card group" data-categoria={marca.categoria}>
+                <div class="marca-card-logo">
+                  {logo ? (
+                    <Image src={logo} alt={`${marca.name} Logo`} class="marca-card-logo-img" />
+                  ) : (
+                    <span class="font-black text-gray-300 tracking-wider text-lg">{marca.name}</span>
+                  )}
+                </div>
+
+                <h3 class="text-lg font-bold text-zaga-navy uppercase tracking-tight mb-2">
+                  {marca.name}
+                </h3>
+
+                <p class="text-sm text-gray-600 leading-relaxed mb-4 flex-grow">
+                  {marca.desc}
+                </p>
+
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                  {marca.tags.map((tag) => (
+                    <span class="marca-tag">{tag}</span>
+                  ))}
+                </div>
+
+                {marca.url && (
+                  <span class="mt-auto inline-flex items-center gap-1.5 text-xs font-semibold text-zaga-blue uppercase tracking-wider group-hover:gap-2.5 transition-all duration-300">
+                    {t('brands.visit.site')}
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </span>
+                )}
+              </Tag>
+            );
+          })}
         </div>
 
       </div>
@@ -537,3 +548,244 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
 
   </div>
 </Layout>
+
+<style>
+  /*
+   * ── Contenedor de filtros ──
+   * En escritorio los 9 filtros caben centrados en dos renglones. En móvil,
+   * apilados ocuparían casi toda la pantalla (y al ser sticky taparían el
+   * contenido), así que ahí se convierten en una tira con scroll horizontal.
+   */
+  .marca-filtros-scroll {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    /* Sangrado para que el primer y último chip no queden pegados al borde */
+    margin: 0 -1.5rem;
+    padding: 0 1.5rem;
+  }
+  .marca-filtros-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .marca-filtros-scroll {
+      flex-wrap: wrap;
+      justify-content: center;
+      overflow-x: visible;
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  /* ── Píldoras de filtro ── */
+  .marca-filtro {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    border: 1px solid rgb(229 231 235);
+    background: white;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: rgb(75 85 99);
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .marca-filtro:hover {
+    border-color: var(--zaga-blue, #0070B8);
+    color: var(--zaga-navy, #1E224F);
+  }
+  .marca-filtro.is-active {
+    background: var(--zaga-navy, #1E224F);
+    border-color: var(--zaga-navy, #1E224F);
+    color: white;
+  }
+  .marca-filtro-count {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    padding: 0.0625rem 0.375rem;
+    border-radius: 9999px;
+    background: rgb(243 244 246);
+    color: rgb(107 114 128);
+  }
+  .marca-filtro.is-active .marca-filtro-count {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+  }
+
+  /* ── Tarjeta de marca ── */
+  .marca-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 1.75rem;
+    background: white;
+    border: 1px solid rgb(243 244 246);
+    border-radius: 1rem;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.05);
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s;
+  }
+  /* Acento superior que crece desde la izquierda al hacer hover */
+  .marca-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--zaga-navy, #1E224F), var(--zaga-cyan, #8BD1ED));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  a.marca-card:hover {
+    box-shadow: 0 18px 40px rgb(30 34 79 / 0.12);
+    transform: translateY(-3px);
+    border-color: rgb(229 231 235);
+  }
+  a.marca-card:hover::before {
+    transform: scaleX(1);
+  }
+  .marca-card-logo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 4.5rem;
+    margin-bottom: 1.25rem;
+  }
+  /*
+   * Los archivos de logo vienen en proporciones muy distintas: algunos son
+   * apaisados (1200x880) y otros son fotos verticales (768x1024). Limitar
+   * solo la altura dejaba los verticales diminutos, así que se acota la caja
+   * en ambos ejes y `object-fit: contain` decide qué lado manda.
+   */
+  .marca-card-logo :global(.marca-card-logo-img) {
+    max-height: 4.5rem;
+    max-width: 11rem;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    object-position: left center;
+    transition: transform 0.3s;
+  }
+  a.marca-card:hover .marca-card-logo :global(.marca-card-logo-img) {
+    transform: scale(1.04);
+  }
+
+  /* ── Etiquetas de producto ── */
+  .marca-tag {
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgb(107 114 128);
+    background: rgb(249 250 251);
+    border: 1px solid rgb(233 236 239);
+    border-radius: 0.25rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  /* ── Estado oculto al filtrar ── */
+  .marca-card.is-hidden {
+    display: none;
+  }
+
+  /* Sin animación de reacomodo si el usuario la desactivó en su sistema */
+  @media (prefers-reduced-motion: reduce) {
+    .marca-card {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  /**
+   * Filtrado de marcas por categoría con animación FLIP.
+   *
+   * FLIP = First, Last, Invert, Play: se mide la posición de cada tarjeta antes
+   * y después de filtrar, y se anima la diferencia. Así las tarjetas que siguen
+   * visibles se "deslizan" a su nueva posición en lugar de saltar.
+   */
+  function initFiltroMarcas() {
+    const grid = document.getElementById('marcas-grid');
+    const botones = document.querySelectorAll<HTMLButtonElement>('.marca-filtro');
+    if (!grid || botones.length === 0) return;
+
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>('.marca-card'));
+    const descripciones = document.querySelectorAll<HTMLElement>('.marca-cat-desc');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function aplicarFiltro(filtro: string) {
+      // FIRST: posición actual de las tarjetas visibles.
+      const posiciones = new Map<HTMLElement, DOMRect>();
+      if (!reduceMotion) {
+        for (const card of cards) {
+          if (!card.classList.contains('is-hidden')) {
+            posiciones.set(card, card.getBoundingClientRect());
+          }
+        }
+      }
+
+      // Mostrar u ocultar según la categoría.
+      for (const card of cards) {
+        const coincide = filtro === 'all' || card.dataset.categoria === filtro;
+        card.classList.toggle('is-hidden', !coincide);
+      }
+
+      // LAST + INVERT + PLAY.
+      if (!reduceMotion) {
+        for (const card of cards) {
+          if (card.classList.contains('is-hidden')) continue;
+          const antes = posiciones.get(card);
+          if (!antes) continue;
+          const ahora = card.getBoundingClientRect();
+          const dx = antes.left - ahora.left;
+          const dy = antes.top - ahora.top;
+          if (dx === 0 && dy === 0) continue;
+
+          card.animate(
+            [
+              { transform: `translate(${dx}px, ${dy}px)` },
+              { transform: 'translate(0, 0)' },
+            ],
+            { duration: 420, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' }
+          );
+        }
+      }
+
+      // Mostrar la descripción de la categoría activa.
+      for (const desc of descripciones) {
+        desc.classList.toggle('hidden', desc.dataset.desc !== filtro);
+      }
+
+      // Estado visual y accesible de los botones.
+      for (const boton of botones) {
+        const activo = boton.dataset.filtro === filtro;
+        boton.classList.toggle('is-active', activo);
+        boton.setAttribute('aria-pressed', String(activo));
+      }
+    }
+
+    for (const boton of botones) {
+      boton.addEventListener('click', () => aplicarFiltro(boton.dataset.filtro || 'all'));
+    }
+
+    // Permite enlazar directo a una categoría: /marcas#control
+    const desdeHash = window.location.hash.slice(1);
+    if (desdeHash && Array.from(botones).some((b) => b.dataset.filtro === desdeHash)) {
+      aplicarFiltro(desdeHash);
+    }
+  }
+
+  initFiltroMarcas();
+  // Astro View Transitions: re-inicializar tras cada navegación.
+  document.addEventListener('astro:after-swap', initFiltroMarcas);
+</script>
