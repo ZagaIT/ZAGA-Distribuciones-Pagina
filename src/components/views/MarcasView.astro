@@ -698,6 +698,16 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
     display: none;
   }
 
+  /*
+   * Durante la animación de salida la tarjeta debe seguir ocupando su lugar
+   * (si se quitara del flujo, las demás saltarían de golpe). Se mantiene
+   * visible pero sin capturar clics hasta que termina de desvanecerse.
+   */
+  .marca-card.is-leaving {
+    pointer-events: none;
+    z-index: 0;
+  }
+
   /* Sin animación de reacomodo si el usuario la desactivó en su sistema */
   @media (prefers-reduced-motion: reduce) {
     .marca-card {
@@ -723,44 +733,111 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
     const descripciones = document.querySelectorAll<HTMLElement>('.marca-cat-desc');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    const DURACION = 420;
+    const SUAVIZADO = 'cubic-bezier(0.22, 1, 0.36, 1)';
+    // Animaciones en curso, para poder cancelarlas si se filtra otra vez antes
+    // de que terminen (si no, una tarjeta podría quedarse a medio camino).
+    let enCurso: Animation[] = [];
+
     function aplicarFiltro(filtro: string) {
-      // FIRST: posición actual de las tarjetas visibles.
+      // Cortar cualquier animación pendiente del filtro anterior.
+      for (const anim of enCurso) anim.cancel();
+      enCurso = [];
+      for (const card of cards) card.classList.remove('is-leaving');
+
+      const coincide = (card: HTMLElement) =>
+        filtro === 'all' || card.dataset.categoria === filtro;
+
+      // Sin animación: mostrar y ocultar directamente.
+      if (reduceMotion) {
+        for (const card of cards) card.classList.toggle('is-hidden', !coincide(card));
+        actualizarTextos(filtro);
+        return;
+      }
+
+      // FIRST: posición de las tarjetas visibles antes de filtrar.
       const posiciones = new Map<HTMLElement, DOMRect>();
-      if (!reduceMotion) {
-        for (const card of cards) {
-          if (!card.classList.contains('is-hidden')) {
-            posiciones.set(card, card.getBoundingClientRect());
-          }
+      for (const card of cards) {
+        if (!card.classList.contains('is-hidden')) {
+          posiciones.set(card, card.getBoundingClientRect());
         }
       }
 
-      // Mostrar u ocultar según la categoría.
+      const entrantes: HTMLElement[] = [];
+      const salientes: HTMLElement[] = [];
       for (const card of cards) {
-        const coincide = filtro === 'all' || card.dataset.categoria === filtro;
-        card.classList.toggle('is-hidden', !coincide);
+        const visible = !card.classList.contains('is-hidden');
+        if (coincide(card) && !visible) entrantes.push(card);
+        else if (!coincide(card) && visible) salientes.push(card);
       }
 
-      // LAST + INVERT + PLAY.
-      if (!reduceMotion) {
-        for (const card of cards) {
-          if (card.classList.contains('is-hidden')) continue;
-          const antes = posiciones.get(card);
-          if (!antes) continue;
-          const ahora = card.getBoundingClientRect();
-          const dx = antes.left - ahora.left;
-          const dy = antes.top - ahora.top;
-          if (dx === 0 && dy === 0) continue;
+      // Las tarjetas que salen se mantienen en el flujo mientras se desvanecen,
+      // así el reacomodo del resto se ve continuo en lugar de a saltos.
+      for (const card of salientes) card.classList.add('is-leaving');
 
+      // Se revela lo que entra para poder medir su posición final.
+      for (const card of entrantes) card.classList.remove('is-hidden');
+
+      // LAST + INVERT + PLAY: las que permanecen se deslizan a su nuevo sitio.
+      for (const card of cards) {
+        if (card.classList.contains('is-hidden')) continue;
+        if (entrantes.includes(card) || salientes.includes(card)) continue;
+        const antes = posiciones.get(card);
+        if (!antes) continue;
+        const ahora = card.getBoundingClientRect();
+        const dx = antes.left - ahora.left;
+        const dy = antes.top - ahora.top;
+        if (dx === 0 && dy === 0) continue;
+
+        enCurso.push(
           card.animate(
             [
               { transform: `translate(${dx}px, ${dy}px)` },
               { transform: 'translate(0, 0)' },
             ],
-            { duration: 420, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' }
-          );
-        }
+            { duration: DURACION, easing: SUAVIZADO }
+          )
+        );
       }
 
+      // Las que salen se desvanecen y encogen; al terminar se quitan del flujo.
+      for (const card of salientes) {
+        const anim = card.animate(
+          [
+            { opacity: 1, transform: 'scale(1)' },
+            { opacity: 0, transform: 'scale(0.94)' },
+          ],
+          { duration: DURACION * 0.5, easing: 'ease-out', fill: 'forwards' }
+        );
+        enCurso.push(anim);
+        anim.finished
+          .then(() => {
+            card.classList.add('is-hidden');
+            card.classList.remove('is-leaving');
+            anim.cancel(); // libera el fill para no dejar la tarjeta transparente
+          })
+          .catch(() => {
+            // La animación fue cancelada por un filtro nuevo: no hay nada que hacer.
+          });
+      }
+
+      // Las que entran aparecen con un leve ascenso, ya en su posición final.
+      for (const card of entrantes) {
+        enCurso.push(
+          card.animate(
+            [
+              { opacity: 0, transform: 'translateY(12px) scale(0.97)' },
+              { opacity: 1, transform: 'translateY(0) scale(1)' },
+            ],
+            { duration: DURACION, easing: SUAVIZADO, delay: DURACION * 0.15 }
+          )
+        );
+      }
+
+      actualizarTextos(filtro);
+    }
+
+    function actualizarTextos(filtro: string) {
       // Mostrar la descripción de la categoría activa.
       for (const desc of descripciones) {
         desc.classList.toggle('hidden', desc.dataset.desc !== filtro);
