@@ -22,14 +22,14 @@ const serviceCategories = [
   },
   {
     key: 'cat2',
-    // Conductores: cable ondulado
-    icon: 'M3 8c2.5 0 2.5 8 5 8s2.5-8 5-8 2.5 8 5 8 2.5-8 3-8',
+    // Conductores: cable trenzado saliendo de su cubierta
+    icon: 'M3 7c3 0 3 10 6 10s3-10 6-10 3 10 6 10M3 12h4M17 12h4',
     linkCat: 'conductores',
   },
   {
     key: 'cat3',
-    // Tubería conduit: tramo de tubo con bridas en los extremos
-    icon: 'M4 8h16M4 16h16M7 8v8M17 8v8M4 6v4M20 6v4M4 14v4M20 14v4',
+    // Tubería conduit: tramo de tubo visto de lado, con sus bridas
+    icon: 'M2 9h20v6H2zM7 9v6M17 9v6M5 7v10M19 7v10',
     linkCat: 'tuberia',
   },
   {
@@ -99,9 +99,9 @@ const basePath = lang === 'en' ? '/en' : '';
                 class="card card-hover-glow group animate-on-scroll p-8 lg:p-9 flex flex-col no-underline text-inherit"
                 style={`transition-delay: ${index * 70}ms`}
               >
-                <div class="w-14 h-14 rounded-card icon-chip flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300">
-                  <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d={cat.icon}></path>
+                <div class="w-16 h-16 rounded-card icon-chip flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300">
+                  <svg class="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d={cat.icon}></path>
                   </svg>
                 </div>
 

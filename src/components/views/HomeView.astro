@@ -31,11 +31,17 @@ const getBrandLogo = (brandName: string): ImageMetadata | null => {
   return null;
 };
 
-// Marcas más reconocibles primero: son las que hacen el trabajo de credibilidad.
+/*
+ * Marcas más reconocibles primero: son las que hacen el trabajo de
+ * credibilidad. Se excluyen a propósito las que marcas.ts documenta como
+ * "logos por reemplazar" (Condumex, Argos, Viakon, Indiana, General Cable,
+ * Condulac, Kobrex): esos archivos son fotos de producto o banners, y en una
+ * tira en escala de grises se leen como manchas negras.
+ */
 const destacadas = [
-  'SIEMENS', 'ABB', '3M', 'SQUARE D', 'CONDUMEX', 'PHILIPS Lighting',
-  'TRUPER', 'ALLEN-BRADLEY', 'LEVITON', 'OMRON', 'VIAKON', 'TERNIUM',
-  'CROUSE-HINDS BY EATON', 'THOMAS & BETTS.', 'GENERAL CABLE', 'BTICINO',
+  'SIEMENS', 'ABB', '3M', 'SQUARE D', 'PHILIPS Lighting', 'TRUPER',
+  'ALLEN-BRADLEY', 'LEVITON', 'OMRON', 'TERNIUM', 'CROUSE-HINDS BY EATON',
+  'THOMAS & BETTS.', 'BTICINO', 'APPLETON', 'KILLARK', 'VOLTECK',
 ];
 
 const porNombre = new Map(marcas.map((m) => [normalizeBrandName(m.name), m]));
@@ -61,8 +67,8 @@ const tiraLogos = destacadas
     <section class="relative overflow-hidden hero-gradient bg-[length:200%_200%] animate-gradient text-white">
       <div class="absolute inset-0 z-0 opacity-[0.03]" style="background-image: radial-gradient(#ffffff 2px, transparent 2px); background-size: 30px 30px;"></div>
 
-      <div class="relative z-10 max-w-7xl mx-auto px-6 pt-28 pb-20 lg:pt-36 lg:pb-28">
-        <div class="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+      <div class="relative z-10 max-w-7xl mx-auto px-6 pt-20 pb-16 lg:pt-24 lg:pb-20">
+        <div class="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
 
           <!-- Columna de texto: 7 de 12, alineada a la izquierda -->
           <div class="lg:col-span-7 animate-on-scroll">

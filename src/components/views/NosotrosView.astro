@@ -39,7 +39,7 @@ const listItems = ['about.list.one', 'about.list.two', 'about.list.three'] as co
   <div class="flex-grow flex flex-col">
 
     <!-- Encabezado -->
-    <section class="section-tight px-6 bg-white">
+    <section class="pt-16 pb-10 lg:pt-20 lg:pb-12 px-6 bg-white">
       <div class="max-w-6xl mx-auto animate-on-scroll">
         <h1 class="display-title rule-accent text-4xl lg:text-5xl font-bold text-zaga-navy tracking-tight">
           {t('nav.about')}
@@ -48,7 +48,7 @@ const listItems = ['about.list.one', 'about.list.two', 'about.list.three'] as co
     </section>
 
     <!-- Misión, Visión, Valores -->
-    <section class="section-tight px-6 bg-zaga-surface">
+    <section class="pb-16 lg:pb-20 pt-10 lg:pt-12 px-6 bg-zaga-surface">
       <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
         {pilares.map((p, i) => (
           <article
