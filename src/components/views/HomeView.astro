@@ -160,7 +160,7 @@ const tiraLogos = destacadas
     <section class="section px-6 bg-zaga-surface">
       <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-6">
 
-        <article class="card card-hover-lift md:col-span-2 p-9 lg:p-11 flex flex-col justify-center animate-on-scroll">
+        <article class="card card-hover-lift md:col-span-2 p-9 lg:p-11 flex flex-col animate-on-scroll">
           <div class="w-16 h-16 icon-chip rounded-card flex items-center justify-center mb-7">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
           </div>
@@ -260,9 +260,8 @@ const tiraLogos = destacadas
   }
 
   /*
-   * Los logos vienen en proporciones y colores muy distintos. En gris y a
-   * media opacidad la tira se lee como un conjunto; al pasar el cursor cada
-   * uno recupera su color.
+   * Los logos van a todo color desde el inicio: son marcas reconocibles y su
+   * color es parte de la prueba social.
    */
   .logo-marquee-item :global(.logo-marquee-img) {
     max-width: 100%;
@@ -270,14 +269,11 @@ const tiraLogos = destacadas
     width: auto;
     height: auto;
     object-fit: contain;
-    filter: grayscale(1);
-    opacity: 0.55;
-    transition: filter 0.3s ease, opacity 0.3s ease;
+    transition: transform 0.3s ease;
   }
 
   .logo-marquee-item:hover :global(.logo-marquee-img) {
-    filter: grayscale(0);
-    opacity: 1;
+    transform: scale(1.04);
   }
 
   /* Sin movimiento: la cinta se queda quieta y se recorta al ancho visible */

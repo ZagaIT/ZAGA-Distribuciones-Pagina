@@ -151,6 +151,13 @@
 
 html {
   scroll-behavior: smooth;
+  /* Red de seguridad en móvil: ningún elemento puede provocar scroll
+     horizontal. clip en vez de hidden para no romper position: sticky. */
+  overflow-x: clip;
+}
+
+body {
+  overflow-x: clip;
 }
 
 body {
