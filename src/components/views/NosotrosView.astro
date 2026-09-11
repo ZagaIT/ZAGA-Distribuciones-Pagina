@@ -6,107 +6,117 @@ import almacenZaga from '../../assets/almacen.png';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+
+/*
+ * Misión / Visión / Valores. Cada bloque lleva su propio icono; el acento
+ * superior sale de la paleta activa en vez del gris fijo que traía el tercero.
+ */
+const pilares = [
+  {
+    titleKey: 'about.mission.title',
+    textKey: 'about.mission.text',
+    accent: 'var(--zaga-blue)',
+    icon: 'M12 21a9 9 0 100-18 9 9 0 000 18zM12 15a3 3 0 100-6 3 3 0 000 6zM12 3v3M12 18v3M3 12h3M18 12h3',
+  },
+  {
+    titleKey: 'about.vision.title',
+    textKey: 'about.vision.text',
+    accent: 'var(--zaga-cyan)',
+    icon: 'M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.5 12C3.7 7.9 7.5 5 12 5s8.3 2.9 9.5 7c-1.2 4.1-5 7-9.5 7s-8.3-2.9-9.5-7z',
+  },
+  {
+    titleKey: 'about.values.title',
+    textKey: 'about.values.text',
+    accent: 'var(--zaga-navy)',
+    icon: 'M12 21l-1.5-1.3C5.4 15.1 2 12.1 2 8.5 2 5.9 4 4 6.5 4c1.5 0 2.9.7 3.5 1.8h.1C11.6 4.7 13 4 14.5 4 17 4 19 5.9 19 8.5c0 3.6-3.4 6.6-8.5 11.2L12 21z',
+  },
+] as const;
+
+const listItems = ['about.list.one', 'about.list.two', 'about.list.three'] as const;
 ---
 
 <Layout lang={lang} title={t('seo.about.title')} description={t('seo.about.desc')}>
-  <section class="container mx-auto px-6 py-20 lg:py-32 flex-grow overflow-hidden">
-    
-    <!-- Encabezado Nosotros -->
-    <div class="text-center max-w-3xl mx-auto mb-20 animate-on-scroll">
-      <h1 class="display-title text-5xl font-extrabold text-zaga-navy mb-6 tracking-tight relative inline-block">
-        {t('nav.about')}
-        <span class="absolute -bottom-2 left-1/4 right-1/4 h-1.5 bg-zaga-cyan rounded-full"></span>
-      </h1>
-    </div>
+  <div class="flex-grow flex flex-col">
 
-    <!-- Misión, Visión, Valores Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-28 max-w-7xl mx-auto">
-      
-      <!-- Misión -->
-      <div class="bg-white p-10 rounded-3xl shadow-lg border-t-8 border-zaga-blue hover:shadow-2xl transition-all duration-300 animate-on-scroll">
-        <h3 class="text-3xl font-bold text-zaga-navy mb-6 flex items-center gap-3">
-          <svg class="w-8 h-8 text-zaga-cyan" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-          {t('about.mission.title')}
-        </h3>
-        <p class="text-gray-600 text-lg leading-relaxed text-justify">
-          {t('about.mission.text')}
-        </p>
+    <!-- Encabezado -->
+    <section class="section-tight px-6 bg-white">
+      <div class="max-w-6xl mx-auto animate-on-scroll">
+        <h1 class="display-title rule-accent text-4xl lg:text-5xl font-bold text-zaga-navy tracking-tight">
+          {t('nav.about')}
+        </h1>
       </div>
+    </section>
 
-      <!-- Visión -->
-      <div class="bg-white p-10 rounded-3xl shadow-lg border-t-8 border-zaga-cyan hover:shadow-2xl transition-all duration-300 animate-on-scroll" style="transition-delay: 100ms;">
-        <h3 class="text-3xl font-bold text-zaga-navy mb-6 flex items-center gap-3">
-          <svg class="w-8 h-8 text-zaga-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-          {t('about.vision.title')}
-        </h3>
-        <p class="text-gray-600 text-lg leading-relaxed text-justify">
-          {t('about.vision.text')}
-        </p>
+    <!-- Misión, Visión, Valores -->
+    <section class="section-tight px-6 bg-zaga-surface">
+      <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {pilares.map((p, i) => (
+          <article
+            class="card card-hover-raise p-8 lg:p-9 relative overflow-hidden animate-on-scroll"
+            style={`transition-delay: ${i * 100}ms`}
+          >
+            <!-- Acento superior: sale de la paleta, no de un gris fijo -->
+            <span
+              class="absolute inset-x-0 top-0 h-1"
+              style={`background:${p.accent}`}
+              aria-hidden="true"
+            ></span>
+
+            <div class="w-12 h-12 rounded-ui icon-chip flex items-center justify-center mb-6">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d={p.icon}></path>
+              </svg>
+            </div>
+
+            <h2 class="text-2xl font-bold text-zaga-navy mb-4">{t(p.titleKey)}</h2>
+            <!-- Sin text-justify: en móvil abría ríos entre palabras -->
+            <p class="text-zaga-ink-muted leading-relaxed">{t(p.textKey)}</p>
+          </article>
+        ))}
       </div>
+    </section>
 
-      <!-- Valores -->
-      <div class="bg-white p-10 rounded-3xl shadow-lg border-t-8 border-gray-900 hover:shadow-2xl transition-all duration-300 animate-on-scroll" style="transition-delay: 200ms;">
-        <h3 class="text-3xl font-bold text-zaga-navy mb-6 flex items-center gap-3">
-          <svg class="w-8 h-8 text-zaga-cyan" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
-          {t('about.values.title')}
-        </h3>
-        <p class="text-gray-600 text-lg leading-relaxed text-justify">
-          {t('about.values.text')}
-        </p>
-      </div>
+    <!-- Experiencia + imagen del almacén -->
+    <section class="section px-6 bg-white">
+      <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
-    </div>
-
-    <!-- Sección Infraestructura / Experiencia -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-24 items-center max-w-7xl mx-auto">
-      
-      <!-- Text / Info Column -->
-      <div class="space-y-8 animate-on-scroll">
-        <div>
-          <h2 class="display-title text-4xl font-extrabold text-zaga-navy mb-6 tracking-tight relative inline-block">
+        <div class="animate-on-scroll">
+          <h2 class="display-title rule-accent text-3xl lg:text-4xl font-bold text-zaga-navy tracking-tight">
             {t('about.experience.title')}
-            <span class="absolute -bottom-2 left-0 right-1/2 h-1 bg-zaga-cyan rounded-full"></span>
           </h2>
-          <p class="text-xl text-gray-600 leading-relaxed text-justify md:text-left">
+          <p class="text-lg text-zaga-ink-muted leading-relaxed mt-7">
             {t('about.experience.desc')}
           </p>
+
+          <ul class="space-y-5 mt-9">
+            {listItems.map((key) => (
+              <li class="flex items-start gap-4">
+                <span class="flex-shrink-0 w-7 h-7 rounded-full icon-chip flex items-center justify-center mt-0.5">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                </span>
+                <span class="text-zaga-navy text-lg font-medium">{t(key)}</span>
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <!-- Custom List -->
-        <ul class="space-y-6 pt-4">
-          <li class="flex items-start">
-            <span class="flex-shrink-0 w-8 h-8 rounded-full icon-chip flex items-center justify-center mt-0.5 mr-5 shadow-sm">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-            </span>
-            <span class="text-gray-800 text-xl font-medium pt-0.5">{t('about.list.one')}</span>
-          </li>
-          <li class="flex items-start">
-            <span class="flex-shrink-0 w-8 h-8 rounded-full icon-chip flex items-center justify-center mt-0.5 mr-5 shadow-sm">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-            </span>
-            <span class="text-gray-800 text-xl font-medium pt-0.5">{t('about.list.two')}</span>
-          </li>
-          <li class="flex items-start">
-            <span class="flex-shrink-0 w-8 h-8 rounded-full icon-chip flex items-center justify-center mt-0.5 mr-5 shadow-sm">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-            </span>
-            <span class="text-gray-800 text-xl font-medium pt-0.5">{t('about.list.three')}</span>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Image Column -->
-      <div class="animate-on-scroll" style="transition-delay: 200ms;">
-        <div class="rounded-3xl shadow-2xl relative overflow-hidden group aspect-[4/3] border border-gray-100">
-          <Image alt="Almacén de ZAGA Distribuciones" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src={almacenZaga}/>
-          <div class="absolute inset-0 bg-gradient-to-t from-zaga-navy/60 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          
-          <div class="absolute bottom-6 left-6 right-6 translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-            <span class="block bg-white/90 backdrop-blur-sm text-zaga-navy font-bold px-4 py-2 rounded shadow text-center text-sm md:text-base">Instalaciones de Primer Nivel</span>
-          </div>
+        <div class="animate-on-scroll" style="transition-delay: 150ms;">
+          <figure class="rounded-card overflow-hidden shadow-raise border border-zaga-line group relative">
+            <Image
+              alt={t('about.facility.caption')}
+              class="w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-700"
+              src={almacenZaga}
+            />
+            <figcaption class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-zaga-navy/85 to-transparent text-white text-sm font-medium px-5 pt-10 pb-4">
+              {t('about.facility.caption')}
+            </figcaption>
+          </figure>
         </div>
-      </div>
 
-    </div>
-  </section>
+      </div>
+    </section>
+
+  </div>
 </Layout>

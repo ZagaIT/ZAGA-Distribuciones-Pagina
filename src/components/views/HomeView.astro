@@ -2,95 +2,282 @@
 import Layout from '../../layouts/Layout.astro';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import logoZaga from '../../assets/logoZaga.png';
+import { marcas } from '../../data/marcas';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const basePath = lang === 'en' ? '/en' : '';
+
+/*
+ * Franja de logos: prueba social real, no un contador inventado. Se toman
+ * marcas del catálogo que efectivamente tienen archivo de logo, para que la
+ * cinta nunca muestre un hueco.
+ */
+const logos = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/marcas/*.{png,jpg,jpeg,svg,webp}',
+  { eager: true }
+);
+
+const normalizeBrandName = (name: string) => name.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+const getBrandLogo = (brandName: string): ImageMetadata | null => {
+  const target = normalizeBrandName(brandName);
+  for (const path in logos) {
+    const filename = path.split('/').pop()?.split('.')[0] || '';
+    if (normalizeBrandName(filename) === target) return logos[path].default;
+  }
+  return null;
+};
+
+// Marcas más reconocibles primero: son las que hacen el trabajo de credibilidad.
+const destacadas = [
+  'SIEMENS', 'ABB', '3M', 'SQUARE D', 'CONDUMEX', 'PHILIPS Lighting',
+  'TRUPER', 'ALLEN-BRADLEY', 'LEVITON', 'OMRON', 'VIAKON', 'TERNIUM',
+  'CROUSE-HINDS BY EATON', 'THOMAS & BETTS.', 'GENERAL CABLE', 'BTICINO',
+];
+
+const porNombre = new Map(marcas.map((m) => [normalizeBrandName(m.name), m]));
+
+const tiraLogos = destacadas
+  .map((nombre) => {
+    const marca = porNombre.get(normalizeBrandName(nombre));
+    const logo = getBrandLogo(nombre);
+    return logo && marca ? { name: marca.name, logo } : null;
+  })
+  .filter((x): x is { name: string; logo: ImageMetadata } => x !== null);
 ---
 
 <Layout lang={lang} title={t('seo.home.title')} description={t('seo.home.desc')}>
   <div class="flex-grow flex flex-col">
-    <!-- Hero Section con Animate Gradient -->
-    <section class="pt-32 pb-24 px-6 lg:py-40 relative overflow-hidden flex flex-col items-center justify-center min-h-[85vh] hero-gradient bg-[length:200%_200%] animate-gradient text-white">
-      
-      <!-- Elementos Decorativos -->
+
+    <!--
+      Hero asimétrico. El centrado perfecto con el logo flotando encima es el
+      patrón más reconocible de "sitio generado": aquí el texto se ancla a la
+      izquierda y el logo ocupa su propia columna, de modo que la página tiene
+      un eje de lectura en vez de un espejo.
+    -->
+    <section class="relative overflow-hidden hero-gradient bg-[length:200%_200%] animate-gradient text-white">
       <div class="absolute inset-0 z-0 opacity-[0.03]" style="background-image: radial-gradient(#ffffff 2px, transparent 2px); background-size: 30px 30px;"></div>
-      
-      <!-- Contenido Principal -->
-      <div class="relative z-10 max-w-4xl mx-auto text-center flex flex-col items-center animate-on-scroll">
-        <div class="bg-white p-3 md:p-4 rounded-3xl shadow-2xl inline-block mb-8">
-          <Image alt="ZAGA Distribuciones Logo" class="w-28 h-28 md:w-36 md:h-36 object-contain" src={logoZaga}/>
-        </div>
-        
-        <h1 class="text-5xl sm:text-6xl md:text-8xl font-extrabold mb-8 tracking-tight leading-tight">
-          <span class="block text-zaga-cyan text-xl sm:text-2xl md:text-3xl mb-4 font-semibold tracking-widest uppercase">{t('hero.title')}</span>
-          <span class="brand-word text-transparent bg-clip-text bg-gradient-to-br from-white via-blue-50 to-zaga-cyan">{t('company.name')}</span>
-        </h1>
-        
-        <p class="text-lg md:text-2xl text-blue-50 mb-12 max-w-3xl mx-auto leading-relaxed font-light text-balance">
-          {t('company.description')}
-        </p>
 
-        <!-- Call To Actions -->
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-5 w-full sm:w-auto">
-          <a href={lang === 'en' ? '/en/contacto/' : '/contacto/'} class="cta-btn w-full sm:w-auto px-10 py-4 rounded-lg font-bold text-lg bg-zaga-blue text-white hover:bg-zaga-cyan hover:text-zaga-navy transition-all duration-300 shadow-[0_4px_20px_rgba(0,112,184,0.4)] hover:shadow-[0_4px_25px_rgba(139,209,237,0.6)] hover:-translate-y-1">
-            {t('company.cta.quote')}
+      <div class="relative z-10 max-w-7xl mx-auto px-6 pt-28 pb-20 lg:pt-36 lg:pb-28">
+        <div class="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+
+          <!-- Columna de texto: 7 de 12, alineada a la izquierda -->
+          <div class="lg:col-span-7 animate-on-scroll">
+            <span class="block text-zaga-cyan text-sm sm:text-base mb-5 font-semibold tracking-[0.2em] uppercase">
+              {t('hero.title')}
+            </span>
+
+            <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold mb-7 tracking-tight leading-[1.05]">
+              <span class="brand-word text-transparent bg-clip-text bg-gradient-to-br from-white via-blue-50 to-zaga-cyan">
+                {t('company.name')}
+              </span>
+            </h1>
+
+            <p class="text-lg lg:text-xl text-blue-50/90 mb-10 max-w-2xl leading-relaxed font-normal">
+              {t('company.description')}
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+              <a
+                href={`${basePath}/contacto/`}
+                class="cta-btn px-8 py-4 rounded-ui font-bold text-base bg-zaga-blue text-white hover:bg-zaga-cyan hover:text-zaga-navy transition-colors duration-300 text-center"
+              >
+                {t('company.cta.quote')}
+              </a>
+              <a
+                href={`${basePath}/servicios/`}
+                class="cta-btn px-8 py-4 rounded-ui font-bold text-base border border-white/30 text-white hover:bg-white hover:text-zaga-navy transition-colors duration-300 text-center"
+              >
+                {t('company.cta.services')}
+              </a>
+            </div>
+          </div>
+
+          <!-- Columna del logo: 5 de 12, desplazada del centro -->
+          <div class="lg:col-span-5 flex justify-center lg:justify-end animate-on-scroll" style="transition-delay: 120ms;">
+            <div class="bg-white p-6 lg:p-8 rounded-card shadow-lift">
+              <Image
+                alt="ZAGA Distribuciones Logo"
+                class="w-32 h-32 lg:w-44 lg:h-44 object-contain"
+                src={logoZaga}
+              />
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!--
+      Franja de marcas: prueba social verificable. Son logos reales de marcas
+      que están en el catálogo del repo, no un "+47% de clientes satisfechos".
+    -->
+    {tiraLogos.length > 0 && (
+      <section class="bg-white border-b border-zaga-line py-10 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 mb-7 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+          <p class="text-xs font-semibold uppercase tracking-[0.18em] text-zaga-ink-faint">
+            {t('home.brands.label')}
+          </p>
+          <a
+            href={`${basePath}/marcas/`}
+            class="text-sm font-semibold text-zaga-blue hover:text-zaga-navy transition-colors"
+          >
+            {t('home.brands.link')} &rarr;
           </a>
-          <a href={lang === 'en' ? '/en/servicios/' : '/servicios/'} class="cta-btn w-full sm:w-auto px-10 py-4 rounded-lg font-bold text-lg bg-white text-zaga-navy hover:bg-blue-50 transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
-            {t('company.cta.services')}
+        </div>
+
+        <!-- La cinta lleva la lista dos veces: al llegar a -50% reinicia sin costura -->
+        <div class="logo-marquee">
+          <div class="logo-marquee-track">
+            {[0, 1].map((copia) => (
+              <div class="logo-marquee-group" aria-hidden={copia === 1 ? 'true' : undefined}>
+                {tiraLogos.map((m) => (
+                  <div class="logo-marquee-item">
+                    <Image src={m.logo} alt={copia === 0 ? m.name : ''} class="logo-marquee-img" loading="lazy" />
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!--
+      Propuesta de valor. Las tres tarjetas ya no son idénticas: la primera
+      ocupa el doble de ancho y manda, las otras dos se apilan a su lado. El
+      contenido es el mismo; lo que cambia es que hay jerarquía.
+    -->
+    <section class="section px-6 bg-zaga-surface">
+      <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-6">
+
+        <article class="card card-hover-lift md:col-span-2 p-9 lg:p-11 flex flex-col justify-center animate-on-scroll">
+          <div class="w-16 h-16 icon-chip rounded-card flex items-center justify-center mb-7">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <h3 class="card-title text-3xl lg:text-4xl mb-4">{t('feature.quote.title')}</h3>
+          <p class="text-zaga-ink-muted text-lg leading-relaxed max-w-xl">{t('feature.quote.desc')}</p>
+        </article>
+
+        <div class="md:col-span-1 grid gap-6">
+          <article class="card card-hover-lift p-8 flex flex-col animate-on-scroll" style="transition-delay: 100ms;">
+            <div class="w-12 h-12 icon-chip rounded-ui flex items-center justify-center mb-5">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h3 class="card-title text-xl mb-3">{t('feature.delivery.title')}</h3>
+            <p class="text-zaga-ink-muted leading-relaxed">{t('feature.delivery.desc')}</p>
+          </article>
+
+          <article class="card card-hover-lift p-8 flex flex-col animate-on-scroll" style="transition-delay: 200ms;">
+            <div class="w-12 h-12 icon-chip rounded-ui flex items-center justify-center mb-5">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            </div>
+            <h3 class="card-title text-xl mb-3">{t('feature.brands.title')}</h3>
+            <p class="text-zaga-ink-muted leading-relaxed">{t('feature.brands.desc')}</p>
+          </article>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Conoce ZAGA — bloque a dos columnas, título a la izquierda -->
+    <section class="section px-6 bg-white">
+      <div class="max-w-6xl mx-auto grid lg:grid-cols-12 gap-10 lg:gap-16 items-start animate-on-scroll">
+        <div class="lg:col-span-5">
+          <h2 class="display-title rule-accent text-3xl lg:text-4xl font-bold text-zaga-navy">
+            {t('home.about.title')}
+          </h2>
+        </div>
+        <div class="lg:col-span-7">
+          <p class="text-lg lg:text-xl text-zaga-ink-muted leading-relaxed mb-8">
+            {t('home.about.desc')}
+          </p>
+          <a
+            href={`${basePath}/nosotros/`}
+            class="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-ui font-bold bg-zaga-navy text-white hover:bg-zaga-blue transition-colors duration-300 group"
+          >
+            {t('home.about.btn')}
+            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
           </a>
         </div>
       </div>
     </section>
 
-    <!-- Propuesta de Valor (Features) -->
-    <section class="py-24 px-6 bg-gray-50 relative">
-      <div class="max-w-7xl mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 relative -mt-32 md:-mt-40 z-20">
-          
-          <div class="card-surface animate-on-scroll bg-white p-10 rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-2">
-            <div class="w-20 h-20 icon-chip rounded-2xl flex items-center justify-center mb-8 rotate-3 hover:rotate-6 transition-transform">
-              <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            </div>
-            <h3 class="card-title text-2xl mb-4">{t('feature.quote.title')}</h3>
-            <p class="text-gray-600 text-lg leading-relaxed">{t('feature.quote.desc')}</p>
-          </div>
-
-          <div class="card-surface animate-on-scroll bg-white p-10 rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-2" style="transition-delay: 100ms;">
-            <div class="w-20 h-20 icon-chip rounded-2xl flex items-center justify-center mb-8 -rotate-3 hover:-rotate-6 transition-transform">
-              <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            </div>
-            <h3 class="card-title text-2xl mb-4">{t('feature.delivery.title')}</h3>
-            <p class="text-gray-600 text-lg leading-relaxed">{t('feature.delivery.desc')}</p>
-          </div>
-
-          <div class="card-surface animate-on-scroll bg-white p-10 rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-2" style="transition-delay: 200ms;">
-            <div class="w-20 h-20 icon-chip rounded-2xl flex items-center justify-center mb-8 rotate-3 hover:rotate-6 transition-transform">
-              <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-            </div>
-            <h3 class="card-title text-2xl mb-4">{t('feature.brands.title')}</h3>
-            <p class="text-gray-600 text-lg leading-relaxed">{t('feature.brands.desc')}</p>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- Conoce ZAGA -->
-    <section class="py-24 px-6 bg-white overflow-hidden relative">
-      <div class="max-w-4xl mx-auto text-center animate-on-scroll">
-        <h2 class="display-title text-4xl lg:text-5xl font-extrabold text-zaga-navy mb-8 relative inline-block">
-          {t('home.about.title')}
-          <span class="absolute -bottom-2 left-1/4 right-1/4 h-1.5 bg-zaga-cyan rounded-full"></span>
-        </h2>
-        <p class="text-xl md:text-2xl text-gray-600 leading-relaxed max-w-3xl mx-auto mb-12">
-          {t('home.about.desc')}
-        </p>
-        <a href={lang === 'en' ? '/en/nosotros/' : '/nosotros/'} class="inline-flex items-center gap-3 px-8 py-4 rounded-full font-bold text-lg bg-gray-900 border border-transparent text-white hover:bg-zaga-cyan hover:text-zaga-navy transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 group">
-          {t('home.about.btn')}
-          <svg class="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-        </a>
-      </div>
-    </section>
   </div>
 </Layout>
+
+<style>
+  /* ── Cinta de logos de marcas ──────────────────────────────────────────
+     Desplazamiento continuo con la lista duplicada. Se difuminan los bordes
+     para que los logos entren y salgan en vez de cortarse en seco. */
+  .logo-marquee {
+    position: relative;
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+  }
+
+  .logo-marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 48s linear infinite;
+  }
+
+  .logo-marquee:hover .logo-marquee-track {
+    animation-play-state: paused;
+  }
+
+  .logo-marquee-group {
+    display: flex;
+    align-items: center;
+  }
+
+  .logo-marquee-item {
+    flex-shrink: 0;
+    width: 9.5rem;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .logo-marquee-item {
+      width: 12rem;
+      height: 4rem;
+      padding: 0 1.75rem;
+    }
+  }
+
+  /*
+   * Los logos vienen en proporciones y colores muy distintos. En gris y a
+   * media opacidad la tira se lee como un conjunto; al pasar el cursor cada
+   * uno recupera su color.
+   */
+  .logo-marquee-item :global(.logo-marquee-img) {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: grayscale(1);
+    opacity: 0.55;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+  }
+
+  .logo-marquee-item:hover :global(.logo-marquee-img) {
+    filter: grayscale(0);
+    opacity: 1;
+  }
+
+  /* Sin movimiento: la cinta se queda quieta y se recorta al ancho visible */
+  @media (prefers-reduced-motion: reduce) {
+    .logo-marquee-track {
+      animation: none;
+    }
+  }
+</style>

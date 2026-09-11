@@ -33,6 +33,7 @@ export const ui = {
 
     'home.brands.label': 'Marcas que distribuimos',
     'home.brands.link': 'Ver el catálogo completo',
+    'services.see.brands': 'Ver marcas de esta categoría',
     'about.facility.caption': 'Nuestras instalaciones en Tampico',
     'brands.spartan.specialists': 'Especialistas en',
     'brands.spartan.client.bancos.title': 'Bancos',
@@ -196,6 +197,7 @@ export const ui = {
 
     'home.brands.label': 'Brands we distribute',
     'home.brands.link': 'See the full catalog',
+    'services.see.brands': 'See brands in this category',
     'about.facility.caption': 'Our facilities in Tampico',
     'brands.spartan.specialists': 'Specialists in',
     'brands.spartan.client.bancos.title': 'Banks',
