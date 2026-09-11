@@ -137,10 +137,14 @@
 
 html {
   scroll-behavior: smooth;
+  /* Red de seguridad en móvil: ningún elemento puede provocar scroll
+     horizontal. clip en vez de hidden para no romper position: sticky. */
+  overflow-x: clip;
 }
 
 body {
   @apply min-h-screen flex flex-col font-sans text-zaga-navy bg-white;
+  overflow-x: clip;
 }
 
 /* ==========================================================================
