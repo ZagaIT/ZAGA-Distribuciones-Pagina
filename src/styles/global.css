@@ -476,16 +476,13 @@ body * {
   width: auto;
   height: auto;
   object-fit: contain;
-  /* Los logos son de fabricantes distintos y chocan entre sí a todo color.
-     En reposo van en gris y recuperan su color al acercarse. */
-  filter: grayscale(1);
-  opacity: 0.55;
-  transition: filter 0.3s ease, opacity 0.3s ease;
+  /* Los logos van a todo color desde el inicio: son marcas reconocibles y
+     su color es parte de la prueba social. */
+  transition: transform 0.3s ease;
 }
 
 .ind-logo-cell:hover img {
-  filter: grayscale(0);
-  opacity: 1;
+  transform: scale(1.04);
 }
 
 /* Degradado del Hero controlado por preset */

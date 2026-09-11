@@ -123,7 +123,7 @@ const features = [
                   <span class="ind-data block text-[10px] uppercase tracking-[0.16em] text-zaga-amber mb-1">
                     {t('home.stats.coverage')}
                   </span>
-                  <span class="ind-data block text-sm text-white/80 truncate">
+                  <span class="ind-data block text-sm text-white/80">
                     {t('home.hero.location')}
                   </span>
                 </div>
@@ -178,7 +178,7 @@ const features = [
         <div class="ind-logo-strip animate-on-scroll">
           {logosDestacados.map((m) => (
             <div class="ind-logo-cell">
-              <Image src={m.img} alt={`${m.name} logo`} loading="lazy" />
+              <Image src={m.img} alt={`${m.name} logo`} loading="eager" />
             </div>
           ))}
         </div>
