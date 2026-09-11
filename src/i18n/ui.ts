@@ -61,6 +61,10 @@ export const ui = {
     'contact.subtitle': 'Estamos listos para atender tus requerimientos especiales con cotizaciones rápidas.',
     'contact.call_us': 'Llámanos',
     'contact.email_us': 'Envíanos un correo',
+    'contact.visit_us': 'Visítanos',
+    'contact.location_note': 'Estamos ubicados en Tampico, Tamaulipas. Con gusto te atendemos en nuestras instalaciones.',
+    'contact.open_in_maps': 'Cómo llegar',
+    'contact.map_title': 'Mapa de la ubicación de ZAGA Distribuciones',
 
     'services.title': 'Nuestros Servicios',
     'services.subtitle': 'Catálogo integral de suministro, instalaciones y distribución.',
@@ -209,6 +213,10 @@ export const ui = {
     'contact.subtitle': 'We are ready to meet your special requirements with fast quotes.',
     'contact.call_us': 'Call Us',
     'contact.email_us': 'Email Us',
+    'contact.visit_us': 'Visit Us',
+    'contact.location_note': 'We are located in Tampico, Tamaulipas. We would be glad to welcome you at our facilities.',
+    'contact.open_in_maps': 'Get directions',
+    'contact.map_title': 'Map of ZAGA Distribuciones location',
 
     'services.title': 'Our Services',
     'services.subtitle': 'Comprehensive catalog of supply, installation, and distribution.',
