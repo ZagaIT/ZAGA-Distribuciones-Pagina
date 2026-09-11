@@ -4,6 +4,31 @@
   --color-zaga-navy: var(--zaga-navy);
   --color-zaga-blue: var(--zaga-blue);
   --color-zaga-cyan: var(--zaga-cyan);
+
+  /* Acento señalético ámbar — constante en los 3 presets. Es el color de
+     "dato importante" del catálogo industrial: CTAs, eyebrows, cifras. */
+  --color-zaga-amber: var(--zaga-amber);
+
+  /* Texto secundario. Reemplaza los ~32 usos de text-gray-600 y se tiñe
+     con la paleta activa, igual que .icon-chip. */
+  --color-zaga-ink-muted: var(--zaga-ink-muted);
+  --color-zaga-line: var(--zaga-line);
+  --color-zaga-surface: var(--zaga-surface);
+
+  /* Familias tipográficas de la dirección Industrial-Técnico */
+  --font-sans: var(--font-body-tight), Inter, system-ui, sans-serif;
+  --font-mono: var(--font-mono-data), ui-monospace, SFMono-Regular, monospace;
+  --font-condensed: var(--font-display-condensed), Oswald, "Arial Narrow", sans-serif;
+
+  /* Radios: 0 en todo. Los bordes rectos son central a la dirección. */
+  --radius-none: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-4xl: 0px;
 }
 
 /* ==========================================================================
@@ -31,6 +56,19 @@
   --zaga-card-stroke: transparent;
   --zaga-card-title-weight: 700;
   --zaga-card-title-spacing: normal;
+
+  /* Acento ámbar señalético: igual en los 3 presets, es la constante
+     que identifica la dirección industrial. */
+  --zaga-amber: #F2A93B;
+
+  /* Texto secundario y líneas.
+     Valores literales a propósito: color-mix() sobre --zaga-navy dejaba el
+     texto casi negro en los navegadores sin soporte (y el minificador
+     genera justamente ese fallback). Estos tonos ya están afinados para
+     la paleta de este preset. */
+  --zaga-ink-muted: #4A5164;
+  --zaga-line: #E4E5EC;
+  --zaga-surface: #F7F7F9;
 }
 
 /* --- 2. Neón Fiusha (solicitado por el cliente) --- */
@@ -50,6 +88,12 @@
     0 0 18px rgba(255, 47, 208, 0.35);
   --zaga-card-title-weight: 800;
   --zaga-card-title-spacing: 0.01em;
+
+  /* El navy de este preset es casi negro: mezclarlo al 62% daría un gris
+     plomo. Se apoya más en el gris neutro para conservar legibilidad. */
+  --zaga-ink-muted: #46495A;
+  --zaga-line: #E7E6E9;
+  --zaga-surface: #F8F7F9;
 }
 
 
@@ -75,6 +119,10 @@
   --zaga-card-title-weight: 400;
   --zaga-card-title-spacing: 0.02em;
 
+  --zaga-ink-muted: #46495A;
+  --zaga-line: #E7E6E9;
+  --zaga-surface: #F8F7F9;
+
   /* Wordart: mayúsculas con sombra dura escalonada (efecto relieve) */
   --zaga-display-font: var(--font-display-industrial);
   --zaga-title-transform: uppercase;
@@ -93,6 +141,187 @@ html {
 
 body {
   @apply min-h-screen flex flex-col font-sans text-zaga-navy bg-white;
+}
+
+/* ==========================================================================
+   DIRECCIÓN "INDUSTRIAL-TÉCNICO"
+   Catálogo de proveedor industrial: bordes rectos, rejilla señalética,
+   números en mono y un ámbar que marca lo importante.
+   ========================================================================== */
+
+/* --- Tipografía display: condensada, siempre en mayúsculas --- */
+.ind-display {
+  font-family: var(--font-condensed);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  line-height: 0.95;
+}
+
+/* El preset Voltaje impone su propia display con relieve; no lo pisamos. */
+[data-preset="voltaje"] .ind-display {
+  font-family: var(--zaga-display-font), Impact, "Arial Black", sans-serif;
+  font-weight: 400;
+}
+
+/* --- Eyebrow: etiqueta mono sobre los títulos de sección --- */
+.ind-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--zaga-amber);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+/* Guion señalético a la izquierda del eyebrow */
+.ind-eyebrow::before {
+  content: '';
+  width: 1.75rem;
+  height: 2px;
+  background: var(--zaga-amber);
+  flex-shrink: 0;
+}
+
+/* --- Datos y números: el mono es protagonista --- */
+.ind-data {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.ind-figure {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* --- Rejilla vertical de fondo (textura de hero) ---
+   Líneas muy tenues, como papel técnico. Opacidad baja a propósito:
+   debe leerse como textura, no como patrón. */
+.ind-grid-lines {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.05) 0,
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 1px,
+    transparent 80px
+  );
+}
+
+/* Variante sobre fondo claro */
+.ind-grid-lines-dark {
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(30, 34, 79, 0.05) 0,
+    rgba(30, 34, 79, 0.05) 1px,
+    transparent 1px,
+    transparent 80px
+  );
+}
+
+/* --- Superficie de tarjeta unificada ---
+   Un solo lenguaje: borde recto, sin sombra, la jerarquía la da el
+   filete superior de acento y el espacio. */
+.ind-card {
+  position: relative;
+  background: white;
+  border: 1px solid var(--zaga-line);
+  border-radius: 0;
+  box-shadow: none;
+  transition: border-color 0.25s ease, background-color 0.25s ease;
+}
+
+.ind-card:hover {
+  border-color: color-mix(in srgb, var(--zaga-blue) 45%, var(--zaga-line));
+}
+
+/* Filete superior: la barra de acento que reemplaza a border-t-blue-600,
+   border-t-amber-400, border-t-sky-500, etc. */
+.ind-card-rule {
+  border-top: 3px solid var(--zaga-blue);
+}
+.ind-card-rule-amber {
+  border-top: 3px solid var(--zaga-amber);
+}
+.ind-card-rule-cyan {
+  border-top: 3px solid var(--zaga-cyan);
+}
+.ind-card-rule-navy {
+  border-top: 3px solid var(--zaga-navy);
+}
+
+/* --- Botón industrial: rectangular, mono, sin sombra --- */
+.ind-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.9375rem 1.75rem;
+  border-radius: 0;
+  border: 1px solid transparent;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.ind-btn-amber {
+  background: var(--zaga-amber);
+  color: #1A1205;
+}
+.ind-btn-amber:hover {
+  background: color-mix(in srgb, var(--zaga-amber) 82%, black);
+}
+
+.ind-btn-outline {
+  background: transparent;
+  color: white;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+.ind-btn-outline:hover {
+  border-color: white;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ind-btn-solid {
+  background: var(--zaga-blue);
+  color: white;
+}
+.ind-btn-solid:hover {
+  background: var(--zaga-navy);
+}
+
+/* --- Banda de especificaciones: pares dato/etiqueta separados por filetes --- */
+.ind-specs {
+  display: grid;
+  border-top: 1px solid var(--zaga-line);
+  border-left: 1px solid var(--zaga-line);
+}
+.ind-spec {
+  border-right: 1px solid var(--zaga-line);
+  border-bottom: 1px solid var(--zaga-line);
+  padding: 1.25rem 1.5rem;
+}
+.ind-spec-label {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--zaga-ink-muted);
+  display: block;
+  margin-top: 0.375rem;
 }
 
 /* Transición suave al cambiar de preset */
@@ -190,13 +419,73 @@ body * {
    en el azul fijo de Tailwind (bg-blue-50).
    -------------------------------------------------------------------------- */
 .icon-chip {
+  /* Tinte claro del azul activo (como en el diseño original). El fallback
+     que genera el minificador para color-mix() sería el azul sólido, así
+     que se declara antes un blanco: si color-mix no existe, el chip queda
+     blanco con el icono azul, legible en vez de un bloque saturado. */
+  background-color: white;
   background-color: color-mix(in srgb, var(--zaga-blue) 12%, white);
   color: var(--zaga-blue);
+  /* Dirección industrial: sin radio y con filete, como una placa técnica. */
+  border-radius: 0;
+  border: 1px solid color-mix(in srgb, var(--zaga-blue) 22%, white);
 }
 
 [data-preset="neon"] .icon-chip {
   background-color: color-mix(in srgb, var(--zaga-cyan) 14%, white);
   color: var(--zaga-blue);
+}
+
+/* --------------------------------------------------------------------------
+   Franja de logos de marcas (prueba social real en la portada).
+   Los logos vienen en proporciones muy distintas, así que se acotan en
+   ambos ejes y `object-fit: contain` decide qué lado manda.
+   -------------------------------------------------------------------------- */
+.ind-logo-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--zaga-line);
+  border-left: 1px solid var(--zaga-line);
+}
+
+@media (min-width: 640px) {
+  .ind-logo-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .ind-logo-strip {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.ind-logo-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1.25rem;
+  min-height: 6.5rem;
+  border-right: 1px solid var(--zaga-line);
+  border-bottom: 1px solid var(--zaga-line);
+  background: white;
+}
+
+.ind-logo-cell img {
+  max-height: 2.75rem;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  /* Los logos son de fabricantes distintos y chocan entre sí a todo color.
+     En reposo van en gris y recuperan su color al acercarse. */
+  filter: grayscale(1);
+  opacity: 0.55;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.ind-logo-cell:hover img {
+  filter: grayscale(0);
+  opacity: 1;
 }
 
 /* Degradado del Hero controlado por preset */
@@ -236,5 +525,17 @@ body * {
   .animate-gradient {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
+  }
+
+  /* El contenido no debe depender de la animación para verse: si el
+     observador no llegara a marcarlo, seguiría invisible. */
+  .animate-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Los logos de la franja no necesitan el paso de gris a color. */
+  .ind-logo-cell img {
+    transition: none !important;
   }
 }

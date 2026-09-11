@@ -126,12 +126,29 @@ const websiteSchema = {
     <!-- Aplica el preset guardado antes del primer render (evita parpadeo) -->
     <script is:inline>
       (() => {
+        // El navy de cada preset. theme-color no acepta var(), así que se
+        // sincroniza a mano cuando el preset cambia.
+        const NAVY = { original: '#1E224F', neon: '#12071F', voltaje: '#12071F' };
+        const sync = (p) => {
+          const meta = document.querySelector('meta[name="theme-color"]');
+          if (meta && NAVY[p]) meta.setAttribute('content', NAVY[p]);
+        };
         try {
           const p = localStorage.getItem('zaga-preset');
           if (p && ['neon', 'voltaje', 'original'].includes(p)) {
             document.documentElement.dataset.preset = p;
+            document.addEventListener('DOMContentLoaded', () => sync(p));
           }
         } catch (_) {}
+        // El selector de presets cambia data-preset en caliente.
+        document.addEventListener('DOMContentLoaded', () => {
+          new MutationObserver(() =>
+            sync(document.documentElement.dataset.preset || 'neon')
+          ).observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-preset'],
+          });
+        });
       })();
     </script>
     <title>{title}</title>
@@ -170,12 +187,16 @@ const websiteSchema = {
     <!-- Iconos -->
     <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#1E224F" />
+    <!-- Debe coincidir con el --zaga-navy del preset por defecto (neon) -->
+    <meta name="theme-color" content="#12071F" />
 
     <link rel="sitemap" href="/sitemap-index.xml" />
 
-    <!-- Fuente display del preset Voltaje (auto-hospedada) -->
+    <!-- Fuentes auto-hospedadas (sin peticiones a Google Fonts en producción) -->
     <Font cssVariable="--font-display-industrial" />
+    <Font cssVariable="--font-display-condensed" preload />
+    <Font cssVariable="--font-body-tight" preload />
+    <Font cssVariable="--font-mono-data" />
 
     <!-- Datos estructurados schema.org -->
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />

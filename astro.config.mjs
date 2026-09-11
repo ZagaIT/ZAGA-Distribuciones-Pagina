@@ -38,6 +38,37 @@ export default defineConfig({
       subsets: ['latin', 'latin-ext'],
       fallbacks: ['Impact', 'Arial Black', 'sans-serif'],
     },
+    {
+      // Dirección "Industrial-Técnico": display condensada para títulos
+      // de sección y hero, siempre en MAYÚSCULAS.
+      provider: fontProviders.google(),
+      name: 'Barlow Condensed',
+      cssVariable: '--font-display-condensed',
+      weights: [600, 700],
+      styles: ['normal'],
+      subsets: ['latin', 'latin-ext'],
+      fallbacks: ['Oswald', 'Arial Narrow', 'sans-serif'],
+    },
+    {
+      // Cuerpo de texto.
+      provider: fontProviders.google(),
+      name: 'Inter Tight',
+      cssVariable: '--font-body-tight',
+      weights: [400, 500, 600, 700],
+      styles: ['normal'],
+      subsets: ['latin', 'latin-ext'],
+      fallbacks: ['Inter', 'system-ui', 'sans-serif'],
+    },
+    {
+      // Datos, etiquetas y números: el mono es señalético, no decorativo.
+      provider: fontProviders.google(),
+      name: 'JetBrains Mono',
+      cssVariable: '--font-mono-data',
+      weights: [400, 500, 700],
+      styles: ['normal'],
+      subsets: ['latin', 'latin-ext'],
+      fallbacks: ['ui-monospace', 'SFMono-Regular', 'monospace'],
+    },
   ],
 
   vite: {
