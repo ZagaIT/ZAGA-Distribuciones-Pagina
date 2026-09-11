@@ -59,41 +59,114 @@ const getCategoriaImage = (imgKey: string): ImageMetadata | null => {
 const soldexelLogo   = getBrandLogo('soldexel');
 const philcoLogo     = getBrandLogo('PHILCO-SLP-BRILLA-MAX');
 const dimasLogo      = getBrandLogo('Dimas Lighting');
-const copperclladLogo = getBrandLogo('copperclad');
-const alumocladLogo  = getBrandLogo('alumoclad');
-const conduccasaLogo = getBrandLogo('CONDUCCASA');
 const spartanLogo    = getBrandLogo('logo_spartansmartbox');
+
+// Las 3 marcas de la división Cable Antirrobo. Antes eran tres bloques de
+// markup casi idénticos; ahora se recorren desde aquí.
+const marcasCCS = [
+  {
+    nombre: 'Copperclad',
+    url: 'https://copperclad.com.mx/',
+    pdf: '/pdfs/copperclad.pdf',
+    descKey: 'brands.copperclad.desc',
+    logo: getBrandLogo('copperclad'),
+  },
+  {
+    nombre: 'Alumoclad',
+    url: 'https://alumoclad.com.mx/',
+    pdf: '/pdfs/alumoclad.pdf',
+    descKey: 'brands.alumoclad.desc',
+    logo: getBrandLogo('alumoclad'),
+  },
+  {
+    nombre: 'Conduccasa',
+    url: 'https://conduccasa.com/',
+    pdf: '/pdfs/conduccasa.pdf',
+    descKey: 'brands.conduccasa.ccs.desc',
+    logo: getBrandLogo('CONDUCCASA'),
+  },
+];
+
+// Clientes de Spartan Smart Box. Los nombres son visibles, así que van por i18n.
+const spartanClientes = [
+  {
+    nombreKey: 'brands.spartan.client.bancos.name',
+    descKey: 'brands.spartan.client.bancos',
+    icon: 'M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z',
+  },
+  {
+    nombreKey: 'brands.spartan.client.hoteles.name',
+    descKey: 'brands.spartan.client.hoteles',
+    icon: 'M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21',
+  },
+  {
+    nombreKey: 'brands.spartan.client.constructoras.name',
+    descKey: 'brands.spartan.client.constructoras',
+    icon: 'M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25',
+  },
+];
 ---
 
 <Layout lang={lang} title={t('seo.brands.title')} description={t('seo.brands.desc')}>
   <div class="flex-grow flex flex-col">
 
     <!-- Hero Header -->
-    <section class="bg-zaga-navy py-20 lg:py-32 px-6 flex flex-col items-center justify-center relative overflow-hidden">
-      <div class="absolute inset-0 z-0 opacity-[0.03]" style="background-image: radial-gradient(#ffffff 2px, transparent 2px); background-size: 30px 30px;"></div>
-      <div class="relative z-10 text-center max-w-4xl animate-on-scroll">
-        <h1 class="display-title text-4xl md:text-5xl lg:text-7xl font-extrabold text-white mb-6 tracking-tight relative inline-block drop-shadow-md">
-          {t('brands.title')}
-          <span class="absolute -bottom-4 left-1/3 right-1/3 h-1.5 bg-zaga-blue rounded-full"></span>
-        </h1>
-        <p class="text-xl md:text-2xl text-blue-50 mt-10 font-light max-w-3xl mx-auto text-balance">
-          {t('brands.subtitle')}
-        </p>
+    <section class="bg-zaga-navy pt-28 pb-20 lg:pt-32 lg:pb-24 px-6 relative overflow-hidden">
+      <div class="ind-grid-lines" aria-hidden="true"></div>
+
+      <div class="relative z-10 max-w-7xl mx-auto animate-on-scroll">
+        <p class="ind-eyebrow mb-6">{t('nav.brands')}</p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end">
+          <div class="lg:col-span-7">
+            <h1 class="display-title ind-display text-5xl lg:text-7xl text-white">
+              {t('brands.title')}
+            </h1>
+            <div class="w-24 h-[3px] bg-zaga-amber mt-6" aria-hidden="true"></div>
+            <p class="text-base md:text-lg text-white/70 leading-relaxed mt-8 max-w-2xl">
+              {t('brands.subtitle')}
+            </p>
+          </div>
+
+          <!-- Cifras del catálogo: se calculan del archivo de datos -->
+          <div class="lg:col-span-5">
+            <dl class="grid grid-cols-2 border-t border-l border-white/15">
+              <div class="p-6 border-r border-b border-white/15">
+                <dd class="ind-figure text-4xl lg:text-5xl text-zaga-amber">{marcas.length}</dd>
+                <dt class="ind-data block text-[10px] uppercase tracking-[0.16em] text-white/55 mt-2">
+                  {t('brands.stats.total')}
+                </dt>
+              </div>
+              <div class="p-6 border-r border-b border-white/15">
+                <dd class="ind-figure text-4xl lg:text-5xl text-white">{categorias.length}</dd>
+                <dt class="ind-data block text-[10px] uppercase tracking-[0.16em] text-white/55 mt-2">
+                  {t('brands.stats.categories')}
+                </dt>
+              </div>
+            </dl>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- Introducción -->
-    <section class="py-16 px-6 bg-gray-50 relative border-b border-gray-200">
-      <div class="max-w-5xl mx-auto text-center animate-on-scroll">
-        <p class="text-xl md:text-2xl text-zaga-navy leading-relaxed mb-6 font-semibold">
-          {t('brands.intro.p1')}
-        </p>
-        <p class="text-lg md:text-xl text-gray-600 leading-relaxed mb-8 max-w-4xl mx-auto">
-          {t('brands.intro.p2')}
-        </p>
-        <p class="text-lg md:text-xl font-bold text-zaga-cyan uppercase tracking-wider">
-          {t('brands.intro.p3')}
-        </p>
+    <section class="py-16 lg:py-20 px-6 bg-zaga-surface border-b border-zaga-line">
+      <div class="max-w-7xl mx-auto animate-on-scroll">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+          <div class="lg:col-span-5">
+            <p class="text-xl md:text-2xl text-zaga-navy leading-snug font-semibold">
+              {t('brands.intro.p1')}
+            </p>
+          </div>
+          <div class="lg:col-span-7 lg:border-l lg:border-zaga-line lg:pl-12">
+            <p class="text-base md:text-lg text-zaga-ink-muted leading-relaxed mb-6">
+              {t('brands.intro.p2')}
+            </p>
+            <p class="ind-data text-xs uppercase tracking-[0.16em] text-zaga-blue">
+              {t('brands.intro.p3')}
+            </p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -101,26 +174,31 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
     <section class="py-24 px-6 bg-white relative">
       <div class="max-w-7xl mx-auto">
 
-        <div class="text-center mb-16 animate-on-scroll">
-          <span class="inline-block bg-zaga-cyan/10 text-zaga-cyan text-xs font-semibold px-4 py-2 rounded-full mb-4 uppercase tracking-widest border border-zaga-cyan/20">
-            {t('brands.dist.badge')}
-          </span>
-          <h2 class="display-title text-3xl lg:text-5xl font-bold text-zaga-navy">{t('brands.dist.title')}</h2>
-          <div class="h-1 w-20 bg-zaga-cyan mx-auto mt-6 rounded-full"></div>
-          <p class="mt-6 text-lg text-gray-600 max-w-2xl mx-auto">{t('brands.dist.subtitle')}</p>
+        <div class="mb-12 animate-on-scroll">
+          <p class="ind-eyebrow mb-5">{t('brands.dist.badge')}</p>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-end">
+            <div class="lg:col-span-6">
+              <h2 class="display-title ind-display text-3xl lg:text-5xl text-zaga-navy">
+                {t('brands.dist.title')}
+              </h2>
+            </div>
+            <div class="lg:col-span-6">
+              <p class="text-zaga-ink-muted leading-relaxed">{t('brands.dist.subtitle')}</p>
+            </div>
+          </div>
         </div>
 
         <!-- Soldexel — Tarjeta Principal -->
-        <div class="bg-white rounded-3xl shadow-[0_8px_40px_rgb(0,0,0,0.1)] border border-gray-100 overflow-hidden mb-10 animate-on-scroll border-t-4 border-t-blue-600">
+        <div class="ind-card ind-card-rule overflow-hidden mb-8 animate-on-scroll">
           <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
 
             <!-- Panel de Logo -->
-            <div class="lg:col-span-2 bg-gray-50 flex items-center justify-center p-10 border-r border-gray-100">
+            <div class="lg:col-span-2 bg-zaga-surface flex items-center justify-center p-10 border-b lg:border-b-0 lg:border-r border-zaga-line">
               <a href="https://soldexel.com/" target="_blank" rel="noopener noreferrer" class="block w-full max-w-[300px] mx-auto group">
                 {soldexelLogo ? (
                   <Image src={soldexelLogo} alt="Soldexel Logo" class="w-full h-auto object-contain transition-transform duration-300 group-hover:scale-105" />
                 ) : (
-                  <div class="flex items-center justify-center bg-white rounded-2xl p-8 shadow-sm border border-gray-200 text-2xl font-black text-zaga-navy tracking-widest group-hover:border-zaga-blue transition-colors">
+                  <div class="flex items-center justify-center bg-white p-8 border border-zaga-line ind-display text-2xl text-zaga-navy tracking-widest group-hover:border-zaga-blue transition-colors">
                     SOLDEXEL
                   </div>
                 )}
@@ -128,10 +206,10 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
             </div>
 
             <!-- Panel de Contenido -->
-            <div class="lg:col-span-3 p-10 flex flex-col justify-between">
+            <div class="lg:col-span-3 p-8 lg:p-10 flex flex-col justify-between">
               <div>
-                <h3 class="text-2xl font-bold text-zaga-navy mb-2">Soldexel</h3>
-                <p class="text-gray-600 text-lg leading-relaxed mb-8">{t('brands.soldexel.desc')}</p>
+                <h3 class="ind-display text-2xl text-zaga-navy mb-3">Soldexel</h3>
+                <p class="text-zaga-ink-muted leading-relaxed mb-8">{t('brands.soldexel.desc')}</p>
 
                 <!-- Catálogo de Categorías Soldexel — Cuadrícula Circular -->
                 <div class="grid grid-cols-3 gap-x-4 gap-y-6 mt-2">
@@ -144,16 +222,16 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
                         rel="noopener noreferrer"
                         class="group flex flex-col items-center gap-2 text-center"
                       >
-                        <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-[3px] border-gray-200 group-hover:border-zaga-blue group-hover:scale-110 transition-all duration-300 shadow-sm group-hover:shadow-lg flex-shrink-0">
+                        <div class="w-full aspect-square overflow-hidden border border-zaga-line group-hover:border-zaga-blue transition-colors duration-300 flex-shrink-0">
                           {img ? (
                             <Image src={img} alt={cat.titulo} class="w-full h-full object-cover" />
                           ) : (
                             <div class="w-full h-full icon-chip flex items-center justify-center">
-                              <span class="text-[9px] font-bold text-blue-400 text-center px-1 leading-tight">{cat.titulo}</span>
+                              <span class="ind-data text-[9px] text-center px-1 leading-tight">{cat.titulo}</span>
                             </div>
                           )}
                         </div>
-                        <span class="text-[11px] font-semibold text-gray-600 group-hover:text-zaga-blue transition-colors leading-tight">{cat.titulo}</span>
+                        <span class="ind-data text-[10px] uppercase tracking-wide text-zaga-ink-muted group-hover:text-zaga-blue transition-colors leading-tight">{cat.titulo}</span>
                       </a>
                     );
                   })}
@@ -167,32 +245,32 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
           <!-- Philco Iluminación -->
-          <div class="bg-white rounded-3xl p-8 lg:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-gray-100 animate-on-scroll border-t-4 border-t-amber-400 flex flex-col">
+          <div class="ind-card ind-card-rule-amber p-8 lg:p-10 animate-on-scroll flex flex-col">
             <div class="flex-1">
-              <div class="aspect-video bg-gray-50 rounded-2xl flex items-center justify-center p-6 mb-6 shadow-inner">
+              <div class="aspect-video bg-zaga-surface border border-zaga-line flex items-center justify-center p-6 mb-6">
                 {philcoLogo ? (
                   <Image src={philcoLogo} alt="PHILCO Iluminación Logo" class="w-full h-full object-contain" />
                 ) : (
-                  <span class="font-black text-2xl text-gray-400 tracking-widest">PHILCO</span>
+                  <span class="ind-display text-2xl text-zaga-ink-muted tracking-widest">PHILCO</span>
                 )}
               </div>
-              <h3 class="text-xl font-bold text-zaga-navy mb-2">PHILCO Iluminación</h3>
-              <p class="text-gray-600 leading-relaxed">{t('brands.philco.desc')}</p>
+              <h3 class="ind-display text-xl text-zaga-navy mb-3">PHILCO Iluminación</h3>
+              <p class="text-zaga-ink-muted leading-relaxed">{t('brands.philco.desc')}</p>
             </div>
           </div>
 
           <!-- Dimas Lighting -->
-          <div class="bg-white rounded-3xl p-8 lg:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-gray-100 animate-on-scroll border-t-4 border-t-sky-500 flex flex-col" style="transition-delay: 100ms;">
+          <div class="ind-card ind-card-rule-cyan p-8 lg:p-10 animate-on-scroll flex flex-col" style="transition-delay: 100ms;">
             <div class="flex-1">
-              <div class="aspect-video bg-gray-50 rounded-2xl flex items-center justify-center p-6 mb-6 shadow-inner">
+              <div class="aspect-video bg-zaga-surface border border-zaga-line flex items-center justify-center p-6 mb-6">
                 {dimasLogo ? (
                   <Image src={dimasLogo} alt="Dimas Lighting Logo" class="w-full h-full object-contain" />
                 ) : (
-                  <span class="font-black text-2xl text-gray-400 tracking-widest">DIMAS LIGHTING</span>
+                  <span class="ind-display text-2xl text-zaga-ink-muted tracking-widest">DIMAS LIGHTING</span>
                 )}
               </div>
-              <h3 class="text-xl font-bold text-zaga-navy mb-2">Dimas Lighting</h3>
-              <p class="text-gray-600 leading-relaxed">{t('brands.dimas.desc')}</p>
+              <h3 class="ind-display text-xl text-zaga-navy mb-3">Dimas Lighting</h3>
+              <p class="text-zaga-ink-muted leading-relaxed">{t('brands.dimas.desc')}</p>
             </div>
           </div>
 
@@ -201,52 +279,57 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
     </section>
 
     <!-- ===== REPRESENTACIONES OFICIALES ===== -->
-    <section class="py-24 px-6 bg-gradient-to-b from-slate-50 to-slate-100 relative">
+    <section class="py-20 lg:py-24 px-6 bg-zaga-surface relative">
       <div class="max-w-7xl mx-auto">
 
-        <div class="text-center mb-16 animate-on-scroll">
-          <span class="inline-block bg-zaga-navy/10 text-zaga-navy text-xs font-semibold px-4 py-2 rounded-full mb-4 uppercase tracking-widest border border-zaga-navy/20">
-            {t('brands.rep.badge')}
-          </span>
-          <h2 class="display-title text-3xl lg:text-5xl font-bold text-zaga-navy">{t('brands.rep.title')}</h2>
-          <div class="h-1 w-20 bg-zaga-cyan mx-auto mt-6 rounded-full"></div>
-          <p class="mt-6 text-lg text-gray-600 max-w-2xl mx-auto">{t('brands.rep.subtitle')}</p>
+        <div class="mb-12 animate-on-scroll">
+          <p class="ind-eyebrow mb-5">{t('brands.rep.badge')}</p>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-end">
+            <div class="lg:col-span-6">
+              <h2 class="display-title ind-display text-3xl lg:text-5xl text-zaga-navy">
+                {t('brands.rep.title')}
+              </h2>
+            </div>
+            <div class="lg:col-span-6">
+              <p class="text-zaga-ink-muted leading-relaxed">{t('brands.rep.subtitle')}</p>
+            </div>
+          </div>
         </div>
 
         <!-- ---- Fábrica 1: Cable Antirrobo ---- -->
-        <div class="bg-white rounded-3xl shadow-[0_8px_40px_rgb(0,0,0,0.1)] border border-gray-100 overflow-hidden mb-10 animate-on-scroll">
+        <div class="ind-card overflow-hidden mb-8 animate-on-scroll">
 
           <!-- Header de Fábrica -->
-          <div class="bg-zaga-navy px-8 py-5 flex items-center gap-5">
-            <div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-white text-lg">1</div>
-            <div>
-              <span class="text-white/50 text-xs uppercase tracking-widest">{t('brands.factory.label')}</span>
-              <h3 class="text-white text-xl font-bold">{t('brands.cableantirobo.section')}</h3>
+          <div class="bg-zaga-navy px-6 lg:px-8 py-5 flex items-center gap-5">
+            <div class="ind-figure w-10 h-10 bg-zaga-amber flex items-center justify-center flex-shrink-0 text-[#1A1205] text-lg">1</div>
+            <div class="min-w-0">
+              <span class="ind-data block text-[10px] uppercase tracking-[0.16em] text-white/50">{t('brands.factory.label')}</span>
+              <h3 class="ind-display text-white text-xl mt-1">{t('brands.cableantirobo.section')}</h3>
             </div>
           </div>
 
-          <div class="p-8 lg:p-12">
+          <div class="p-6 lg:p-12">
 
-            <!-- Concepto CCS -->
-            <div class="bg-red-50 border border-red-200 rounded-2xl p-6 mb-10">
-              <p class="font-bold text-red-900 text-lg mb-1">{t('brands.cableantirobo.concept')}</p>
-              <p class="text-red-800 leading-relaxed">{t('brands.cableantirobo.desc')}</p>
+            <!-- Concepto CCS: se destaca con el filete ámbar, no con un fondo rojo -->
+            <div class="border-l-[3px] border-zaga-amber bg-zaga-surface p-6 mb-10">
+              <p class="ind-display text-lg text-zaga-navy mb-2">{t('brands.cableantirobo.concept')}</p>
+              <p class="text-zaga-ink-muted leading-relaxed">{t('brands.cableantirobo.desc')}</p>
             </div>
 
             <!-- Imagen + Info Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
 
               <!-- Imagen: Robo de Cobre -->
-              <div class="rounded-2xl overflow-hidden bg-gray-900 aspect-video flex items-center justify-center">
+              <div class="overflow-hidden bg-zaga-navy border border-zaga-line aspect-video flex items-center justify-center">
                 {roboCobreImage ? (
                   <Image src={roboCobreImage} alt={t('brands.copper.theft.label')} class="w-full h-full object-cover" />
                 ) : (
                   <div class="text-center p-8">
-                    <div class="w-16 h-16 text-gray-600 mx-auto mb-4">
+                    <div class="w-16 h-16 text-white/40 mx-auto mb-4">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>
                     </div>
-                    <p class="text-gray-500 text-sm font-medium">{t('brands.copper.theft.label')}</p>
-                    <p class="text-gray-600 text-xs mt-1">{t('brands.copper.theft.placeholder')}</p>
+                    <p class="ind-data text-white/70 text-xs uppercase tracking-wider">{t('brands.copper.theft.label')}</p>
+                    <p class="text-white/40 text-xs mt-2">{t('brands.copper.theft.placeholder')}</p>
                   </div>
                 )}
               </div>
@@ -254,118 +337,83 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
               <!-- Información CCS + Enlace -->
               <div class="flex flex-col justify-center gap-6">
                 <div>
-                  <h4 class="text-xl font-bold text-zaga-navy mb-3">{t('brands.copper.theft.label')}</h4>
-                  <p class="text-gray-600 leading-relaxed">{t('brands.cableantirobo.copper.info')}</p>
+                  <h4 class="ind-display text-xl text-zaga-navy mb-3">{t('brands.copper.theft.label')}</h4>
+                  <p class="text-zaga-ink-muted leading-relaxed">{t('brands.cableantirobo.copper.info')}</p>
                 </div>
                 <a
                   href="https://cableantirobo.com/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="self-start inline-flex items-center gap-2 bg-zaga-navy text-white px-6 py-3 rounded-xl font-semibold hover:bg-zaga-blue transition-colors duration-200"
+                  class="ind-btn ind-btn-solid self-start"
                 >
                   cableantirobo.com
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                 </a>
               </div>
             </div>
 
-            <!-- 3 Marcas: Copperclad, Alumoclad, Conduccasa -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-              <!-- Copperclad -->
-              <div class="border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col">
-                <a href="https://copperclad.com.mx/" target="_blank" rel="noopener noreferrer" class="block bg-gray-50 p-6 flex items-center justify-center aspect-video hover:bg-gray-100 transition-colors">
-                  {copperclladLogo ? (
-                    <Image src={copperclladLogo} alt="Copperclad Logo" class="w-full h-full object-contain" />
-                  ) : (
-                    <span class="font-black text-lg text-gray-400 tracking-wider text-center">COPPERCLAD</span>
-                  )}
-                </a>
-                <div class="p-5 flex flex-col flex-1 gap-4">
-                  <div>
-                    <h4 class="font-bold text-zaga-navy mb-1">Copperclad</h4>
-                    <p class="text-sm text-gray-600 leading-relaxed">{t('brands.copperclad.desc')}</p>
-                  </div>
-                  <div class="mt-auto">
-                    <a href="/pdfs/copperclad.pdf" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200">
-                      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                      {t('brands.pdf.view')}
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Alumoclad -->
-              <div class="border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col">
-                <a href="https://alumoclad.com.mx/" target="_blank" rel="noopener noreferrer" class="block bg-gray-50 p-6 flex items-center justify-center aspect-video hover:bg-gray-100 transition-colors">
-                  {alumocladLogo ? (
-                    <Image src={alumocladLogo} alt="Alumoclad Logo" class="w-full h-full object-contain" />
-                  ) : (
-                    <span class="font-black text-lg text-gray-400 tracking-wider text-center">ALUMOCLAD</span>
-                  )}
-                </a>
-                <div class="p-5 flex flex-col flex-1 gap-4">
-                  <div>
-                    <h4 class="font-bold text-zaga-navy mb-1">Alumoclad</h4>
-                    <p class="text-sm text-gray-600 leading-relaxed">{t('brands.alumoclad.desc')}</p>
-                  </div>
-                  <div class="mt-auto">
-                    <a href="/pdfs/alumoclad.pdf" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200">
-                      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                      {t('brands.pdf.view')}
-                    </a>
+            <!-- 3 Marcas CCS: Copperclad, Alumoclad, Conduccasa -->
+            <div class="ind-specs grid-cols-1 md:grid-cols-3">
+              {marcasCCS.map((m) => (
+                <div class="ind-spec bg-white p-0 flex flex-col">
+                  <a
+                    href={m.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="block bg-zaga-surface p-6 flex items-center justify-center aspect-video border-b border-zaga-line hover:bg-white transition-colors"
+                  >
+                    {m.logo ? (
+                      <Image src={m.logo} alt={`${m.nombre} Logo`} class="w-full h-full object-contain" />
+                    ) : (
+                      <span class="ind-display text-lg text-zaga-ink-muted tracking-wider text-center">{m.nombre}</span>
+                    )}
+                  </a>
+                  <div class="p-5 flex flex-col flex-1 gap-4">
+                    <div>
+                      <h4 class="ind-display text-lg text-zaga-navy mb-2">{m.nombre}</h4>
+                      <p class="text-sm text-zaga-ink-muted leading-relaxed">{t(m.descKey as any)}</p>
+                    </div>
+                    <div class="mt-auto">
+                      <a
+                        href={m.pdf}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="ind-data inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.12em] text-zaga-blue border border-zaga-line px-3 py-2 hover:border-zaga-blue hover:bg-zaga-surface transition-colors"
+                      >
+                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                        {t('brands.pdf.view')}
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <!-- Conduccasa -->
-              <div class="border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col">
-                <a href="https://conduccasa.com/" target="_blank" rel="noopener noreferrer" class="block bg-gray-50 p-6 flex items-center justify-center aspect-video hover:bg-gray-100 transition-colors">
-                  {conduccasaLogo ? (
-                    <Image src={conduccasaLogo} alt="Conduccasa Logo" class="w-full h-full object-contain" />
-                  ) : (
-                    <span class="font-black text-lg text-gray-400 tracking-wider text-center">CONDUCCASA</span>
-                  )}
-                </a>
-                <div class="p-5 flex flex-col flex-1 gap-4">
-                  <div>
-                    <h4 class="font-bold text-zaga-navy mb-1">Conduccasa</h4>
-                    <p class="text-sm text-gray-600 leading-relaxed">{t('brands.conduccasa.ccs.desc')}</p>
-                  </div>
-                  <div class="mt-auto">
-                    <a href="/pdfs/conduccasa.pdf" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200">
-                      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                      {t('brands.pdf.view')}
-                    </a>
-                  </div>
-                </div>
-              </div>
-
+              ))}
             </div>
           </div>
         </div>
 
         <!-- ---- Fábrica 2: Spartan Smart Box ---- -->
-        <div class="bg-white rounded-3xl shadow-[0_8px_40px_rgb(0,0,0,0.1)] border border-gray-100 overflow-hidden animate-on-scroll">
+        <div class="ind-card overflow-hidden animate-on-scroll">
 
           <!-- Header de Fábrica -->
-          <div class="bg-zaga-navy px-8 py-5 flex items-center gap-5">
-            <div class="w-10 h-10 bg-zaga-cyan rounded-full flex items-center justify-center flex-shrink-0 font-bold text-zaga-navy text-lg">2</div>
-            <div>
-              <span class="text-white/50 text-xs uppercase tracking-widest">{t('brands.factory.label')}</span>
-              <h3 class="text-white text-xl font-bold">{t('brands.spartan.title')}</h3>
+          <div class="bg-zaga-navy px-6 lg:px-8 py-5 flex items-center gap-5">
+            <div class="ind-figure w-10 h-10 bg-zaga-amber flex items-center justify-center flex-shrink-0 text-[#1A1205] text-lg">2</div>
+            <div class="min-w-0">
+              <span class="ind-data block text-[10px] uppercase tracking-[0.16em] text-white/50">{t('brands.factory.label')}</span>
+              <h3 class="ind-display text-white text-xl mt-1">{t('brands.spartan.title')}</h3>
             </div>
           </div>
 
-          <div class="p-8 lg:p-12 grid grid-cols-1 lg:grid-cols-5 gap-10 items-start">
+          <div class="p-6 lg:p-12 grid grid-cols-1 lg:grid-cols-5 gap-10 items-start">
 
             <!-- Logo -->
-            <div class="lg:col-span-2 flex items-center justify-center">
-              <div class="bg-slate-50 rounded-2xl p-10 border border-slate-200 w-full max-w-sm flex items-center justify-center aspect-video">
+            <div class="lg:col-span-2">
+              <div class="bg-zaga-surface border border-zaga-line p-10 w-full flex items-center justify-center aspect-video">
                 {spartanLogo ? (
                   <Image src={spartanLogo} alt="Spartan Smart Box Logo" class="w-full h-full object-contain" />
                 ) : (
-                  <span class="font-black text-xl text-gray-400 tracking-wider text-center leading-relaxed">SPARTAN<br/>SMART BOX</span>
+                  <span class="ind-display text-xl text-zaga-ink-muted tracking-wider text-center leading-relaxed">SPARTAN<br/>SMART BOX</span>
                 )}
               </div>
             </div>
@@ -374,60 +422,40 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
             <div class="lg:col-span-3 flex flex-col gap-6">
 
               <!-- Slogan -->
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 text-slate-600 flex-shrink-0">
-                  <svg viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 00-1.032 0 11.209 11.209 0 01-7.877 3.08.75.75 0 00-.722.515A12.74 12.74 0 002.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 00.374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 00-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08z" clip-rule="evenodd"/></svg>
-                </div>
-                <div>
-                  <span class="text-xs font-semibold text-slate-400 uppercase tracking-widest block mb-0.5">Especialistas en</span>
-                  <h4 class="text-xl font-black text-slate-800 leading-tight">{t('brands.spartan.slogan')}</h4>
-                </div>
+              <div>
+                <p class="ind-eyebrow mb-3">{t('brands.spartan.specialists')}</p>
+                <h4 class="ind-display text-2xl text-zaga-navy leading-tight">{t('brands.spartan.slogan')}</h4>
               </div>
 
               <!-- Descripción principal -->
-              <p class="text-gray-600 text-base leading-relaxed">{t('brands.spartan.main.desc')}</p>
+              <p class="text-zaga-ink-muted leading-relaxed">{t('brands.spartan.main.desc')}</p>
 
               <!-- Clientes principales -->
               <div>
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">{t('brands.spartan.clients.intro')}</p>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-
-                  <!-- Bancos -->
-                  <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col gap-2">
-                    <div class="w-7 h-7 text-slate-500">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z"/></svg>
+                <p class="ind-data text-[10px] uppercase tracking-[0.16em] text-zaga-ink-muted mb-4">
+                  {t('brands.spartan.clients.intro')}
+                </p>
+                <div class="ind-specs grid-cols-1 sm:grid-cols-3">
+                  {spartanClientes.map((c) => (
+                    <div class="ind-spec bg-white flex flex-col gap-3">
+                      <div class="w-7 h-7 text-zaga-blue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                          <path stroke-linecap="round" stroke-linejoin="round" d={c.icon} />
+                        </svg>
+                      </div>
+                      <h5 class="ind-display text-base text-zaga-navy">{t(c.nombreKey as any)}</h5>
+                      <p class="text-xs text-zaga-ink-muted leading-relaxed">{t(c.descKey as any)}</p>
                     </div>
-                    <h5 class="font-bold text-slate-800 text-sm">Bancos</h5>
-                    <p class="text-xs text-gray-500 leading-relaxed">{t('brands.spartan.client.bancos')}</p>
-                  </div>
-
-                  <!-- Hoteles -->
-                  <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col gap-2">
-                    <div class="w-7 h-7 text-slate-500">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z"/></svg>
-                    </div>
-                    <h5 class="font-bold text-slate-800 text-sm">Hoteles</h5>
-                    <p class="text-xs text-gray-500 leading-relaxed">{t('brands.spartan.client.hoteles')}</p>
-                  </div>
-
-                  <!-- Constructoras -->
-                  <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col gap-2">
-                    <div class="w-7 h-7 text-slate-500">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
-                    </div>
-                    <h5 class="font-bold text-slate-800 text-sm">Constructoras</h5>
-                    <p class="text-xs text-gray-500 leading-relaxed">{t('brands.spartan.client.constructoras')}</p>
-                  </div>
-
+                  ))}
                 </div>
               </div>
 
               <!-- Cobertura Nacional -->
-              <div class="flex items-center gap-3 bg-zaga-navy/5 border border-zaga-navy/10 rounded-xl px-5 py-3">
-                <div class="w-5 h-5 text-zaga-cyan flex-shrink-0">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+              <div class="flex items-center gap-3 border-l-[3px] border-zaga-amber bg-zaga-surface px-5 py-4">
+                <div class="w-5 h-5 text-zaga-amber flex-shrink-0">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
                 </div>
-                <p class="text-sm font-semibold text-zaga-navy">{t('brands.spartan.coverage')}</p>
+                <p class="ind-data text-xs uppercase tracking-wide text-zaga-navy">{t('brands.spartan.coverage')}</p>
               </div>
 
             </div>
@@ -441,18 +469,24 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
     <section class="pb-32 pt-24 px-6 bg-white relative">
       <div class="max-w-7xl mx-auto">
 
-        <div class="mb-12 animate-on-scroll text-center">
-          <h2 class="display-title text-3xl lg:text-4xl font-bold text-zaga-navy flex items-center justify-center gap-4">
-            <svg class="w-8 h-8 text-zaga-cyan" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2.5 4A1.5 1.5 0 001 5.5V14a2 2 0 002 2h14a2 2 0 002-2V5.5A1.5 1.5 0 0017.5 4h-15zM9 8a1 1 0 011-1h6a1 1 0 110 2h-6a1 1 0 01-1-1zm-4.707 3.707a1 1 0 00-1.414-1.414l-1.5 1.5a1 1 0 000 1.414l1.5 1.5a1 1 0 001.414-1.414L3.414 12l.879-.879zM9 12a1 1 0 011-1h6a1 1 0 110 2h-6a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
-            {t('brands.catalog')}
-          </h2>
-          <p class="mt-4 text-gray-600 text-lg max-w-3xl mx-auto">{t('brands.catalog.intro')}</p>
+        <div class="mb-10 animate-on-scroll">
+          <p class="ind-eyebrow mb-5">{t('brands.catalog.eyebrow')}</p>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-end">
+            <div class="lg:col-span-6">
+              <h2 class="display-title ind-display text-3xl lg:text-5xl text-zaga-navy">
+                {t('brands.catalog')}
+              </h2>
+            </div>
+            <div class="lg:col-span-6">
+              <p class="text-zaga-ink-muted leading-relaxed">{t('brands.catalog.intro')}</p>
+            </div>
+          </div>
         </div>
 
         <!-- Filtros por categoría (sticky al hacer scroll) -->
         <div
           id="marcas-filtros"
-          class="sticky top-16 z-30 -mx-6 px-6 py-4 mb-10 bg-white/90 backdrop-blur-md border-b border-gray-100"
+          class="sticky top-16 z-30 -mx-6 px-6 py-4 mb-10 bg-white/95 backdrop-blur-md border-y border-zaga-line"
         >
           <div class="marca-filtros-scroll" role="group" aria-label={t('brands.filter.label')}>
             <button
@@ -482,7 +516,7 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
         <!-- Descripción de la categoría activa (solo con una sola seleccionada) -->
         <div id="marcas-cat-desc" class="marca-cat-desc-wrap is-empty max-w-3xl mx-auto text-center">
           {categorias.map((cat) => (
-            <p class="marca-cat-desc text-gray-600 leading-relaxed hidden" data-desc={cat.id}>
+            <p class="marca-cat-desc text-zaga-ink-muted leading-relaxed hidden" data-desc={cat.id}>
               {t(cat.descKey as any)}
             </p>
           ))}
@@ -502,28 +536,28 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
                   {logo ? (
                     <Image src={logo} alt={`${marca.name} Logo`} class="marca-card-logo-img" />
                   ) : (
-                    <span class="font-black text-gray-300 tracking-wider text-lg">{marca.name}</span>
+                    <span class="ind-display text-lg text-zaga-ink-muted tracking-wider">{marca.name}</span>
                   )}
                 </div>
 
-                <h3 class="text-lg font-bold text-zaga-navy uppercase tracking-tight mb-2">
+                <h3 class="ind-display text-xl text-zaga-navy mb-3">
                   {marca.name}
                 </h3>
 
-                <p class="text-sm text-gray-600 leading-relaxed mb-4 flex-grow">
+                <p class="text-sm text-zaga-ink-muted leading-relaxed mb-5 flex-grow">
                   {marca.desc}
                 </p>
 
-                <div class="flex flex-wrap gap-1.5 mb-4">
+                <div class="flex flex-wrap gap-1.5 mb-5">
                   {marca.tags.map((tag) => (
                     <span class="marca-tag">{tag}</span>
                   ))}
                 </div>
 
                 {marca.url && (
-                  <span class="mt-auto inline-flex items-center gap-1.5 text-xs font-semibold text-zaga-blue uppercase tracking-wider group-hover:gap-2.5 transition-all duration-300">
+                  <span class="ind-data mt-auto inline-flex items-center gap-2 text-[11px] text-zaga-blue uppercase tracking-[0.12em] group-hover:gap-3 transition-all duration-300">
                     {t('brands.visit.site')}
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                   </span>
@@ -538,12 +572,13 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
 
     <!-- Mensaje Final -->
     <section class="py-20 px-6 bg-zaga-navy relative overflow-hidden">
-      <div class="absolute inset-0 z-0 opacity-[0.03]" style="background-image: radial-gradient(#ffffff 2px, transparent 2px); background-size: 30px 30px;"></div>
-      <div class="relative z-10 max-w-4xl mx-auto text-center animate-on-scroll">
-        <h3 class="text-2xl md:text-4xl font-bold text-white mb-6 leading-tight">
+      <div class="ind-grid-lines" aria-hidden="true"></div>
+      <div class="relative z-10 max-w-5xl mx-auto animate-on-scroll">
+        <div class="w-24 h-[3px] bg-zaga-amber mb-8" aria-hidden="true"></div>
+        <h3 class="ind-display text-3xl md:text-5xl text-white mb-6 leading-tight">
           {t('brands.outro.p1')}
         </h3>
-        <p class="text-xl md:text-2xl text-blue-50/80 font-light max-w-3xl mx-auto">
+        <p class="text-base md:text-lg text-white/65 leading-relaxed max-w-3xl">
           {t('brands.outro.p2')}
         </p>
       </div>
@@ -590,31 +625,42 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    border-radius: 9999px;
-    border: 1px solid rgb(229 231 235);
+    /* Radio 0: los filtros son etiquetas rectas, no píldoras. */
+    border-radius: 0;
+    border: 1px solid var(--zaga-line);
     background: white;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: rgb(75 85 99);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--zaga-ink-muted);
     cursor: pointer;
     transition: background-color 0.2s, color 0.2s, border-color 0.2s;
   }
+
+  .marca-filtro:focus-visible {
+    outline: 2px solid var(--zaga-blue);
+    outline-offset: 2px;
+  }
   .marca-filtro:hover {
-    border-color: var(--zaga-blue, #0070B8);
-    color: var(--zaga-navy, #1E224F);
+    border-color: var(--zaga-blue);
+    color: var(--zaga-navy);
   }
   .marca-filtro.is-active {
-    background: var(--zaga-navy, #1E224F);
-    border-color: var(--zaga-navy, #1E224F);
+    background: var(--zaga-navy);
+    border-color: var(--zaga-navy);
     color: white;
   }
   .marca-filtro-count {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
     font-size: 0.6875rem;
     font-weight: 700;
     padding: 0.0625rem 0.375rem;
-    border-radius: 9999px;
-    background: rgb(243 244 246);
-    color: rgb(107 114 128);
+    border-radius: 0;
+    background: var(--zaga-surface);
+    color: var(--zaga-ink-muted);
   }
   .marca-filtro.is-active .marca-filtro-count {
     background: rgba(255, 255, 255, 0.2);
@@ -656,13 +702,14 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
     flex-direction: column;
     padding: 1.75rem;
     background: white;
-    border: 1px solid rgb(243 244 246);
-    border-radius: 1rem;
-    box-shadow: 0 1px 3px rgb(0 0 0 / 0.05);
+    border: 1px solid var(--zaga-line);
+    /* Mismo lenguaje que .ind-card: recto y sin sombra. */
+    border-radius: 0;
+    box-shadow: none;
     text-decoration: none;
     color: inherit;
     overflow: hidden;
-    transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s;
+    transition: border-color 0.3s, background-color 0.3s;
   }
   /* Acento superior que crece desde la izquierda al hacer hover */
   .marca-card::before {
@@ -672,15 +719,15 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--zaga-navy, #1E224F), var(--zaga-cyan, #8BD1ED));
+    /* Filete ámbar: el acento señalético de la dirección. */
+    background: var(--zaga-amber);
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   }
   a.marca-card:hover {
-    box-shadow: 0 18px 40px rgb(30 34 79 / 0.12);
-    transform: translateY(-3px);
-    border-color: rgb(229 231 235);
+    border-color: color-mix(in srgb, var(--zaga-blue) 45%, var(--zaga-line));
+    background: var(--zaga-surface);
   }
   a.marca-card:hover::before {
     transform: scaleX(1);
@@ -713,14 +760,15 @@ const spartanLogo    = getBrandLogo('logo_spartansmartbox');
 
   /* ── Etiquetas de producto ── */
   .marca-tag {
+    font-family: var(--font-mono);
     font-size: 0.625rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
+    font-weight: 500;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgb(107 114 128);
-    background: rgb(249 250 251);
-    border: 1px solid rgb(233 236 239);
-    border-radius: 0.25rem;
+    color: var(--zaga-ink-muted);
+    background: var(--zaga-surface);
+    border: 1px solid var(--zaga-line);
+    border-radius: 0;
     padding: 0.25rem 0.5rem;
   }
 
