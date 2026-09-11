@@ -29,6 +29,18 @@ export default defineConfig({
   // Google Fonts en producción.
   fonts: [
     {
+      // Fuente del sitio: display (700) y cuerpo (400/500).
+      // Antes el sitio corría en la font-sans de Tailwind, es decir la fuente
+      // del sistema: sin identidad y distinta en cada equipo.
+      provider: fontProviders.google(),
+      name: 'Inter Tight',
+      cssVariable: '--font-inter-tight',
+      weights: [400, 500, 700],
+      styles: ['normal'],
+      subsets: ['latin', 'latin-ext'],
+      fallbacks: ['Inter', 'system-ui', 'sans-serif'],
+    },
+    {
       // Preset "Voltaje": condensada industrial
       provider: fontProviders.google(),
       name: 'Archivo Black',

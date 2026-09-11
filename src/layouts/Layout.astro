@@ -126,6 +126,13 @@ const websiteSchema = {
     <!-- Aplica el preset guardado antes del primer render (evita parpadeo) -->
     <script is:inline>
       (() => {
+        // El navy de cada preset. El theme-color de la barra del navegador
+        // tiene que coincidir con el preset activo, no con un valor fijo.
+        window.ZAGA_PRESET_NAVY = {
+          original: '#1E224F',
+          neon: '#12071F',
+          voltaje: '#12071F',
+        };
         try {
           const p = localStorage.getItem('zaga-preset');
           if (p && ['neon', 'voltaje', 'original'].includes(p)) {
@@ -170,11 +177,15 @@ const websiteSchema = {
     <!-- Iconos -->
     <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#1E224F" />
+    <!-- Debe coincidir con el navy del preset por defecto (data-preset="neon").
+         El script de arriba puede cambiar el preset antes del render, así que
+         el theme-color se re-sincroniza ahí mismo. -->
+    <meta id="theme-color-meta" name="theme-color" content="#12071F" />
 
     <link rel="sitemap" href="/sitemap-index.xml" />
 
-    <!-- Fuente display del preset Voltaje (auto-hospedada) -->
+    <!-- Fuentes auto-hospedadas (sin peticiones a Google Fonts en producción) -->
+    <Font cssVariable="--font-inter-tight" preload />
     <Font cssVariable="--font-display-industrial" />
 
     <!-- Datos estructurados schema.org -->
@@ -205,6 +216,23 @@ const websiteSchema = {
     <WhatsAppButton />
 
     <script is:inline>
+      // Mantiene el theme-color del navegador alineado con el preset activo,
+      // incluido cuando el cliente lo cambia con el selector de estilos.
+      (() => {
+        const meta = document.getElementById('theme-color-meta');
+        const navy = window.ZAGA_PRESET_NAVY || {};
+        if (!meta) return;
+        const sync = () => {
+          const p = document.documentElement.dataset.preset || 'neon';
+          if (navy[p]) meta.setAttribute('content', navy[p]);
+        };
+        sync();
+        new MutationObserver(sync).observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ['data-preset'],
+        });
+      })();
+
       document.addEventListener("DOMContentLoaded", () => {
         const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {

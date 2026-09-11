@@ -1,14 +1,59 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   SISTEMA DE DISEÑO
+   Escala cerrada de radios, sombras, espaciado y tinta. Todo lo visual del
+   sitio sale de aquí. Si algo pide un valor que no está en estas listas,
+   primero se discute la lista.
+   ========================================================================== */
+
 @theme {
   --color-zaga-navy: var(--zaga-navy);
   --color-zaga-blue: var(--zaga-blue);
   --color-zaga-cyan: var(--zaga-cyan);
+
+  /* Tinta secundaria: sustituye los usos sueltos de text-gray-600. Se tiñe
+     con la paleta activa, igual que .icon-chip, en vez de quedarse en un
+     gris fijo que pelea con los presets fiusha. */
+  --color-zaga-ink-muted: var(--zaga-ink-muted);
+  --color-zaga-ink-faint: var(--zaga-ink-faint);
+  --color-zaga-line: var(--zaga-line);
+  --color-zaga-surface: var(--zaga-surface);
+
+  /* ── Radios: EXACTAMENTE DOS ──────────────────────────────────────────
+     rounded-ui   (10px) → botones, chips, campos, elementos chicos
+     rounded-card (14px) → tarjetas, paneles, contenedores
+     rounded-full        → sólo píldoras y círculos                        */
+  --radius-ui: 10px;
+  --radius-card: 14px;
+
+  /* ── Tipografía ──────────────────────────────────────────────────────── */
+  --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  /* ── Sombras: DOS NIVELES ─────────────────────────────────────────────
+     shadow-raise → el elemento descansa sobre la superficie (reposo)
+     shadow-lift  → el elemento se levanta (hover, o jerarquía real)
+     Una sombra significa "esto está por encima". Si todo la tiene, no
+     significa nada: por eso sólo hay dos y se usan con intención.         */
+  --shadow-raise: 0 1px 2px rgb(15 18 40 / 0.04), 0 2px 8px rgb(15 18 40 / 0.06);
+  --shadow-lift: 0 2px 4px rgb(15 18 40 / 0.05), 0 14px 32px rgb(15 18 40 / 0.13);
+}
+
+/* ── Escala de espaciado ──────────────────────────────────────────────────
+   Cuatro pasos para el ritmo vertical. Las utilidades de Tailwind siguen
+   disponibles, pero las secciones usan .section / .section-tight para que
+   el ritmo de página sea el mismo en las 5 vistas.                        */
+:root {
+  --space-section: 5rem;
+  --space-section-lg: 7rem;
+  --space-block: 3rem;
+  --space-card: 1.75rem;
+  --space-card-lg: 2.25rem;
 }
 
 /* ==========================================================================
    PRESETS DE PALETA
-   Cada preset redefine las 3 variables base. Como Tailwind v4 compila
+   Cada preset redefine las variables base. Como Tailwind v4 compila
    bg-zaga-navy / text-zaga-blue / etc. a var(--color-zaga-*), cambiar el
    atributo data-preset en <html> re-tematiza todo el sitio sin tocar el
    contenido de las páginas.
@@ -31,6 +76,12 @@
   --zaga-card-stroke: transparent;
   --zaga-card-title-weight: 700;
   --zaga-card-title-spacing: normal;
+
+  /* Tinta y superficies derivadas de la paleta activa */
+  --zaga-ink-muted: color-mix(in srgb, var(--zaga-navy) 66%, #6b7280);
+  --zaga-ink-faint: color-mix(in srgb, var(--zaga-navy) 42%, #9ca3af);
+  --zaga-line: color-mix(in srgb, var(--zaga-navy) 12%, white);
+  --zaga-surface: color-mix(in srgb, var(--zaga-navy) 4%, white);
 }
 
 /* --- 2. Neón Fiusha (solicitado por el cliente) --- */
@@ -50,6 +101,12 @@
     0 0 18px rgba(255, 47, 208, 0.35);
   --zaga-card-title-weight: 800;
   --zaga-card-title-spacing: 0.01em;
+
+  /* En fiusha el gris neutro se ve sucio: la tinta toma un punto de morado */
+  --zaga-ink-muted: color-mix(in srgb, var(--zaga-navy) 55%, #6b7280);
+  --zaga-ink-faint: color-mix(in srgb, var(--zaga-navy) 34%, #9ca3af);
+  --zaga-line: color-mix(in srgb, var(--zaga-blue) 14%, white);
+  --zaga-surface: color-mix(in srgb, var(--zaga-blue) 4%, white);
 }
 
 
@@ -75,6 +132,11 @@
   --zaga-card-title-weight: 400;
   --zaga-card-title-spacing: 0.02em;
 
+  --zaga-ink-muted: color-mix(in srgb, var(--zaga-navy) 55%, #6b7280);
+  --zaga-ink-faint: color-mix(in srgb, var(--zaga-navy) 34%, #9ca3af);
+  --zaga-line: color-mix(in srgb, var(--zaga-blue) 14%, white);
+  --zaga-surface: color-mix(in srgb, var(--zaga-blue) 4%, white);
+
   /* Wordart: mayúsculas con sombra dura escalonada (efecto relieve) */
   --zaga-display-font: var(--font-display-industrial);
   --zaga-title-transform: uppercase;
@@ -93,6 +155,15 @@ html {
 
 body {
   @apply min-h-screen flex flex-col font-sans text-zaga-navy bg-white;
+  /* Inter Tight es estrecha: un pelo más de tracking la vuelve legible en
+     cuerpo de texto sin perder el aire compacto que le da carácter. */
+  letter-spacing: 0.005em;
+}
+
+/* Inter Tight tiene mucho carácter en display: se aprovecha apretando el
+   tracking en los títulos grandes en vez de dejarlos en el default. */
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.02em;
 }
 
 /* Transición suave al cambiar de preset */
@@ -100,6 +171,103 @@ body * {
   transition-property: background-color, border-color, color, fill, stroke;
   transition-duration: 300ms;
   transition-timing-function: ease;
+}
+
+/* --------------------------------------------------------------------------
+   RITMO DE SECCIÓN
+   Una sola escala vertical para las 5 páginas.
+   -------------------------------------------------------------------------- */
+.section {
+  padding-top: var(--space-section);
+  padding-bottom: var(--space-section);
+}
+.section-tight {
+  padding-top: var(--space-block);
+  padding-bottom: var(--space-block);
+}
+@media (min-width: 1024px) {
+  .section {
+    padding-top: var(--space-section-lg);
+    padding-bottom: var(--space-section-lg);
+  }
+  .section-tight {
+    padding-top: var(--space-section);
+    padding-bottom: var(--space-section);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   TARJETAS
+   Una sola definición de "superficie de tarjeta" para todo el sitio: mismo
+   radio, mismo borde, misma sombra de reposo. El gesto de levantarse al
+   hover se aplica por separado (.card-hover-*) para que cada sección pueda
+   elegir el suyo en vez de repetir el mismo en las 5 páginas.
+   -------------------------------------------------------------------------- */
+.card {
+  background: white;
+  border: 1px solid var(--zaga-line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-raise);
+}
+
+/* Gesto A — Inicio: la tarjeta se levanta. El gesto "clásico" del sitio,
+   ahora reservado a la home, que es donde tiene que vender. */
+.card-hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.card-hover-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lift);
+  border-color: color-mix(in srgb, var(--zaga-blue) 28%, white);
+}
+
+/* Gesto B — Servicios: no se levanta, se enciende. El borde inferior de
+   acento crece y la superficie se tiñe; la tarjeta se queda en su sitio. */
+.card-hover-glow {
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.card-hover-glow::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--zaga-cyan);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.card-hover-glow:hover {
+  background-color: var(--zaga-surface);
+  border-color: color-mix(in srgb, var(--zaga-blue) 30%, white);
+}
+.card-hover-glow:hover::after {
+  transform: scaleX(1);
+}
+
+/* Gesto C — Contacto / Nosotros: sólo la sombra sube un nivel. El más
+   discreto, para paneles de información que no son botones. */
+.card-hover-raise {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.card-hover-raise:hover {
+  box-shadow: var(--shadow-lift);
+  border-color: color-mix(in srgb, var(--zaga-blue) 22%, white);
+}
+
+/* --------------------------------------------------------------------------
+   Foco visible — un solo anillo para todo el sitio.
+   Nunca usar focus:outline-none sin este reemplazo.
+   -------------------------------------------------------------------------- */
+.focus-ring:focus-visible,
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--zaga-cyan);
+  outline-offset: 2px;
+  border-radius: var(--radius-ui);
 }
 
 /* --------------------------------------------------------------------------
@@ -209,6 +377,24 @@ body * {
   );
 }
 
+/* --------------------------------------------------------------------------
+   Regla de acento: línea corta bajo un título. Sustituye los <span> absolutos
+   con left-1/4 right-1/4 que cada página repetía con medidas distintas.
+   -------------------------------------------------------------------------- */
+.rule-accent::after {
+  content: '';
+  display: block;
+  width: 3.5rem;
+  height: 3px;
+  border-radius: 9999px;
+  background: var(--zaga-cyan);
+  margin-top: 1.25rem;
+}
+.rule-accent-center::after {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* Animaciones de Scroll (Vanilla JS) */
 .animate-on-scroll {
   opacity: 0;
@@ -231,10 +417,22 @@ body * {
   animation: gradient 15s ease infinite;
 }
 
+/* Franja de logos del Inicio: desplazamiento continuo. La cinta lleva la
+   lista duplicada, así que al llegar al -50% vuelve al inicio sin costura. */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   body *,
   .animate-gradient {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
+  }
+  /* La cinta de logos se detiene y se deja leer como una tira estática */
+  .logo-marquee-track {
+    animation: none !important;
+    transform: none !important;
   }
 }
